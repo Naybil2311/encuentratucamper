@@ -20,83 +20,76 @@ def clasificar_vehiculo(titulo):
         return "Gran Volumen"
     return "Furgoneta Camper"
 
-def obtener_anuncios_apify():
-    if not APIFY_TOKEN:
-        print("Aviso: No se encontró APIFY_TOKEN en los Secrets de GitHub.")
-        return []
-
-    url_apify = f"https://api.apify.com/v2/actors/louisdeconinck~wallapop-scraper/run-sync-get-dataset-items?token={APIFY_TOKEN}"
-    payload = {"keywords": "furgoneta camper", "maxItems": 10}
-    
+def obtener_anuncios():
     anuncios = []
-    try:
-        print("Consultando Apify para Wallapop...")
-        res = requests.post(url_apify, json=payload, timeout=120)
-        print(f"Respuesta HTTP Apify: {res.status_code}")
-        
-        if res.status_code in [200, 201]:
-            items = res.json()
-            if isinstance(items, list) and len(items) > 0:
-                for item in items:
-                    titulo = item.get("title") or item.get("name") or "Camper Segunda Mano"
-                    
-                    # Precio
-                    precio = item.get("price")
-                    if isinstance(precio, dict):
-                        precio = precio.get("amount", 25000)
-                    elif not precio or not str(precio).replace('.','').isdigit():
-                        precio = 25000
-                    else:
-                        precio = int(float(precio))
+    
+    # 1. Intentar Apify si hay Token
+    if APIFY_TOKEN:
+        url_apify = f"https://api.apify.com/v2/actors/louisdeconinck~wallapop-scraper/run-sync-get-dataset-items?token={APIFY_TOKEN}"
+        payload = {"keywords": "furgoneta camper", "maxItems": 5}
+        try:
+            res = requests.post(url_apify, json=payload, timeout=90)
+            if res.status_code in [200, 201]:
+                items = res.json()
+                if isinstance(items, list):
+                    for item in items:
+                        titulo = item.get("title") or item.get("name") or "Camper Segunda Mano"
+                        precio = item.get("price")
+                        if isinstance(precio, dict):
+                            precio = precio.get("amount", 25000)
+                        elif not precio or not str(precio).replace('.','').isdigit():
+                            precio = 25000
+                        else:
+                            precio = int(float(precio))
 
-                    # Imagen
-                    imagen = "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80"
-                    images_field = item.get("images") or item.get("photos")
-                    if isinstance(images_field, list) and len(images_field) > 0:
-                        first_img = images_field[0]
-                        if isinstance(first_img, dict):
-                            imagen = first_img.get("original_url") or first_img.get("url") or imagen
-                        elif isinstance(first_img, str):
-                            imagen = first_img
+                        link_web = item.get("url") or item.get("web_url") or item.get("share_url") or item.get("link") or "https://wallapop.com"
 
-                    # Obtener la URL pública del anuncio
-                    link_web = item.get("url") or item.get("web_url") or item.get("share_url") or item.get("link") or "https://wallapop.com"
+                        anuncios.append({
+                            "title": str(titulo)[:60],
+                            "price": precio,
+                            "location": "España",
+                            "year": 2021,
+                            "km": 65000,
+                            "sleeps": 4,
+                            "type": clasificar_vehiculo(titulo),
+                            "image": "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80",
+                            "url": link_web,
+                            "seller_type": "Particular",
+                            "source": "Wallapop"
+                        })
+        except Exception as e:
+            print(f"Error Apify: {e}")
 
-                    anuncios.append({
-                        "title": str(titulo)[:60],
-                        "price": precio,
-                        "location": "España",
-                        "year": 2020,
-                        "km": 85000,
-                        "sleeps": 4,
-                        "type": clasificar_vehiculo(titulo),
-                        "image": imagen,
-                        "url": link_web,  # Mapeado a la columna 'url'
-                        "seller_type": "Particular",
-                        "source": "Wallapop"
-                    })
-                print(f"✓ Extraídos {len(anuncios)} anuncios de Apify.")
-            else:
-                print("Apify respondió correctamente pero no devolvió elementos.")
-        else:
-            print(f"Error HTTP de Apify: {res.text[:200]}")
-    except Exception as e:
-        print(f"Excepción al consultar Apify: {e}")
+    # 2. Si Apify falla o no hay Token, usar datos de prueba CON URL
+    if not anuncios:
+        print("Añadiendo anuncios de prueba con URL rellena...")
+        anuncios = [
+            {
+                "title": "Volkswagen California T6 Ocean (Prueba Link)",
+                "price": 49000,
+                "location": "Madrid",
+                "year": 2020,
+                "km": 50000,
+                "sleeps": 4,
+                "type": "Furgoneta Camper",
+                "image": "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=800&q=80",
+                "url": "https://wallapop.com",
+                "seller_type": "Particular",
+                "source": "Wallapop Test"
+            }
+        ]
         
     return anuncios
 
-# --- EJECUCIÓN PRINCIPAL ---
-print("Iniciando Bot de Inserción...")
-anuncios_totales = obtener_anuncios_apify()
+# --- EJECUCIÓN ---
+print("Iniciando Bot...")
+lista = obtener_anuncios()
 
-if anuncios_totales:
-    for a in anuncios_totales:
-        try:
-            r = requests.post(f"{SUPABASE_URL}/rest/v1/anuncios", json=a, headers=headers_supabase)
-            print(f"✓ [{r.status_code}] Guardado en Supabase: {a['title']} | URL: {a['url']}")
-        except Exception as e:
-            print(f"Error en envío a Supabase: {e}")
-else:
-    print("No hay anuncios nuevos para insertar.")
+for a in lista:
+    try:
+        r = requests.post(f"{SUPABASE_URL}/rest/v1/anuncios", json=a, headers=headers_supabase)
+        print(f"✓ [{r.status_code}] Guardado: {a['title']} | URL: {a['url']}")
+    except Exception as e:
+        print(f"Error: {e}")
 
-print("Proceso completado.")
+print("Finalizado.")
