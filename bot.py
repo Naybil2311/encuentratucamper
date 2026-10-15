@@ -10,27 +10,43 @@ headers = {
     "Prefer": "return=minimal"
 }
 
-anuncios_antiguos = [
+anuncios = [
     {
-        "title": "Volkswagen T3 Joker Westfalia (1988)",
+        "title": "Volkswagen T3 Westfalia",
         "price": 14500,
         "location": "Girona",
         "year": 1988,
         "km": 210000,
         "sleeps": 4,
-        "type": "Gran Volumen",
+        "type": "Camper
+	
+	
+		
+	
+	
+		Activar hasta 5,60% cashback
+	
+",
         "image": "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80",
         "seller_type": "Particular",
-        "source": "Agregador Clásicos"
+        "source": "Agregador"
     },
     {
-        "title": "Mercedes MB100 Camperizada Homologada",
+        "title": "Mercedes MB100 Camper
+	
+	
+		
+	
+	
+		Activar hasta 5,60% cashback
+	
+",
         "price": 8900,
         "location": "Asturias",
         "year": 1995,
         "km": 185000,
         "sleeps": 2,
-        "type": "Furgoneta Camper
+        "type": "Camper
 	
 	
 		
@@ -41,46 +57,17 @@ anuncios_antiguos = [
 ",
         "image": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80",
         "seller_type": "Comunidad",
-        "source": "Agregador Clásicos"
-    },
-    {
-        "title": "Ford Transit Mk3 Camper
-	
-	
-		
-	
-	
-		Activar hasta 5,60% cashback
-	
- Vintage",
-        "price": 6500,
-        "location": "Granada",
-        "year": 1992,
-        "km": 160000,
-        "sleeps": 3,
-        "type": "Furgoneta Camper
-	
-	
-		
-	
-	
-		Activar hasta 5,60% cashback
-	
-",
-        "image": "https://images.unsplash.com/photo-1516939884455-1445c8652f83?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Clásicos"
+        "source": "Agregador"
     }
 ]
 
-print("🚀 Conectando con Supabase e insertando anuncios...")
+print("Iniciando envio a Supabase...")
 
-for anuncio in anuncios_antiguos:
+for item in anuncios:
     try:
-        url = f"{SUPABASE_URL}/rest/v1/anuncios"
-        res = requests.post(url, json=anuncio, headers=headers)
-        print(f"Respuesta HTTP {res.status_code} para '{anuncio['title']}'")
+        r = requests.post(f"{SUPABASE_URL}/rest/v1/anuncios", json=item, headers=headers)
+        print(f"Estado HTTP {r.status_code} para {item['title']}")
     except Exception as e:
         print(f"Error: {e}")
 
-print("🎉 Proceso finalizado.")
+print("Proceso finalizado con exito.")
