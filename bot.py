@@ -1,7 +1,7 @@
 import requests
 
-SUPABASE_URL = "https://ecidgvwrog9savmdzj1z.supabase.co"
-SUPABASE_KEY = "sb_publishable_eCIDgVWRog9savmDZJ1Z-Q_RRYIHMj4"
+SUPABASE_URL = "https://agazyoihnkienkywbpxe.supabase.co"
+SUPABASE_KEY = "https://agazyoihnkienkywbpxe.supabase.co/rest/v1/"
 
 headers = {
     "apikey": SUPABASE_KEY,
