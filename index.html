@@ -146,7 +146,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
 
-        <!-- HERO BANNER WITH CHARACTER LOOKING DIRECTLY AT READER -->
+        <!-- HERO BANNER -->
         <section id="heroBanner" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-800 text-white border-4 border-black rounded-3xl p-6 sm:p-10 mb-8 relative overflow-hidden card-brutal">
             <div class="relative z-10 max-w-2xl">
                 <div class="inline-flex items-center gap-2 bg-camper-yellow text-black font-black text-xs sm:text-sm px-3 py-1 rounded-full border-2 border-black mb-4 uppercase">
@@ -168,7 +168,7 @@
                 </div>
             </div>
 
-            <!-- Stylized Camper Vanlife Traveler Character directly looking at reader -->
+            <!-- Stylized Camper Character -->
             <div class="absolute right-2 bottom-0 hidden lg:block w-80 h-full pointer-events-none">
                 <svg viewBox="0 0 300 350" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full object-contain">
                     <path d="M90 100 C90 40, 210 40, 210 100 Z" fill="#FF5722" stroke="#000000" stroke-width="6"/>
@@ -561,27 +561,34 @@
                         .order('created_at', { ascending: false });
 
                     if (!error && data) {
-                        supabaseAds = data.map(item => ({
-                            id: item.id,
-                            title: item.title,
-                            price: item.price,
-                            category: item.type || 'Furgoneta Camper',
-                            condition: item.condition || 'Ocasión',
-                            location: item.location || 'España',
-                            year: item.year || 2020,
-                            km: item.km || 50000,
-                            sleepPlaces: item.sleeps || 2,
-                            travelPlaces: item.travel_places || 2,
-                            isExternal: false,
-                            source: 'Comunidad Supabase',
-                            sourceColor: 'bg-camper-blue',
-                            image: item.image || PRESET_CAMPER_IMAGES.vw_california,
-                            description: item.description || '',
-                            seller: item.seller || 'Usuario',
-                            phone: item.whatsapp || '600000000',
-                            date: 'Reciente',
-                            externalUrl: null
-                        }));
+                        supabaseAds = data.map(item => {
+                            // Normalización de categorías provenientes del Bot
+                            let cat = item.type || 'Furgoneta Camper';
+                            if (cat === 'Camper') cat = 'Furgoneta Camper';
+                            if (cat === 'Autocaravana') cat = 'Perfilada';
+
+                            return {
+                                id: item.id,
+                                title: item.title,
+                                price: item.price,
+                                category: cat,
+                                condition: item.condition || 'Ocasión',
+                                location: item.location || 'España',
+                                year: item.year || 2020,
+                                km: item.km || 50000,
+                                sleepPlaces: item.sleeps || 2,
+                                travelPlaces: item.travel_places || 2,
+                                isExternal: false,
+                                source: item.source || 'Comunidad Supabase',
+                                sourceColor: 'bg-camper-blue',
+                                image: item.image || PRESET_CAMPER_IMAGES.vw_california,
+                                description: item.description || 'Sin descripción detallada.',
+                                seller: item.seller || 'Usuario',
+                                phone: item.whatsapp || '600000000',
+                                date: 'Reciente',
+                                externalUrl: null
+                            };
+                        });
                     }
                 } catch(err) {
                     console.log("Fallback a modo local:", err);
@@ -910,9 +917,6 @@
             toast.classList.remove('translate-y-32');
             setTimeout(() => toast.classList.add('translate-y-32'), 3000);
         }
-    </script>
-</body>
-</html>
     </script>
 </body>
 </html>
