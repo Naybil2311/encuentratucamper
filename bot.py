@@ -1,72 +1,44 @@
+import base64
 import requests
 
-SUPABASE_URL = "https://ecidgvwrog9savmdzj1z.supabase.co"
-SUPABASE_KEY = "sb_publishable_eCIDgVWRog9savmDZJ1Z-Q_RRYIHMj4"
+# Código del script codificado para evitar interferencias de extensiones del navegador
+code_b64 = """
+aW1wb3J0IHJlcXVlc3RzCgpTVVBBQkFTRV9VUkwgPSAiaHR0cHM6Ly9lY2lkZ3Z3cm9nOXNhd
+W1kemoxei5zdXBhYmFzZS5jbyIKU1VQQUJBU0VfS0VZID0gInNiX3B1Ymxpc2hhYmxlX2VD
+SURnVldSb2c5c2F2bURaSjFaLVFfUlJZSUhNajQiCgpoZWFkZXJzID0gewogICAgImFwaWtl
+eSI6IFNVUEFCQVNFX0tFWSwKICAgICJBdXRob3JpemF0aW9uIjogZiJCZWFyZXIge1NVUEFC
+QVNFX0tFWX0iLAogICAgIkNvbnRlbnQtVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIiwKICAg
+ICJQcmVmZXIiOiAicmV0dXJuPW1pbmltYWwiCn0KC2FudW5jaW9zID0gWwogICAgewogICAg
+ICAgICJ0aXRsZSI6ICJWb2xrc3dhZ2VuIFQzIFdlc3RmYWxpYSAoMTk4OCkiLAogICAgICAg
+ICJwcmljZSI6IDE0NTAwLAogICAgICAgICJsb2NhdGlvbiI6ICJHaXJvbmEiLAogICAgICAg
+ICJ5ZWFyIjogMTk4OCwKICAgICAgICAia20iOiAyMTAwMDAsCiAgICAgICAgInNsZWVwcyI6
+IDQsCiAgICAgICAgInR5cGUiOiAiR3JhbiBWb2x1bWVuIiwKICAgICAgICAiaW1hZ2UiOiAi
+aHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29tL3Bob3RvLTE1MjM5ODczNTU1MjMtYzdiNWIw
+ZGQ5MGE3P2F1dG89Zm9ybWF0JmZpdD1jcm9wJnc9ODAwJnE9ODAiLAogICAgICAgICJzZWxs
+ZXJfdHlwZSI6ICJQYXJ0aWN1bGFyIiwKICAgICAgICAic291cmNlIjogIkFncmVnYWRvciBD
+bMOhc2ljb3MiCiAgICB9LAogICAgewogICAgICAgICJ0aXRsZSI6ICJNZXJjZWRlcyBNQjEw
+MCBDYW1wZXJpemFkYSIsCiAgICAgICAgInByaWNlIjogODkwMCwKICAgICAgICAibG9jYXRp
+b24iOiAiQXN0dXJpYXMiLAogICAgICAgICJ5ZWFyIjogMTk5NSwKICAgICAgICAia20iOiAx
+ODUwMDAsCiAgICAgICAgInNsZWVwcyI6IDIsCiAgICAgICAgInR5cGUiOiAiRnVyZ29uZXRh
+IENhbXBlciIsCiAgICAgICAgImltYWdlIjogImh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNv
+bS9waG90by0xNDY5ODU0NTIzMDg2LWNjMDJmNWRkODgwMD9hdXRvPWZvcm1hdCZmaXQ9Y3Jv
+cCZ3PTgwMCZxPTgwIiwKICAgICAgICAic2VsbGVyX3R5cGUiOiAiQ29tdW5pZGFkIiwKICAg
+ICAgICAic291cmNlIjogIkFncmVnYWRvciBDbMOhc2ljb3MiCiAgICB9LAogICAgewogICAg
+ICAgICJ0aXRsZSI6ICJGb3JkIFRyYW5zaXQgTWszIFZpbnRhZ2UiLAogICAgICAgICJwcmlj
+ZSI6IDY1MDAsCiAgICAgICAgImxvY2F0aW9uIjogIkdyYW5hZGEiLAogICAgICAgICJ5ZWFy
+IjogMTk5MiwKICAgICAgICAia20iOiAxNjAwMDAsCiAgICAgICAgInNsZWVwcyI6IDMsCiAg
+ICAgICAgInR5cGUiOiAiRnVyZ29uZXRhIENhbXBlciIsCiAgICAgICAgImltYWdlIjogImh0
+dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTE2OTM5ODg0NDU1LTE0NDVjODY1
+MmY4Mz9hdXRvPWZvcm1hdCZmaXQ9Y3JvcCZ3PTgwMCZxPTgwIiwKICAgICAgICAic2VsbGVy
+X3R5cGUiOiAiUGFydGljdWxhciIsCiAgICAgICAgInNvdXJjZSI6ICJBZ3JlZ2Fkb3IgQ2zE
+YXNpY29zIgogICAgfQpdCgpwcmludCgi8J2agSBFbnZpYW5kbyBhbnVuY2lvcyBhbnRpZ3Vv
+cyBhIFN1cGFiYXNlLi4uIikKCmZvciBhbm4gaW4gYW51bmNpb3M6CiAgICB0cnk6CiAgICAg
+ICAgcmVzID0gcmVxdWVzdHMucG9zdChmInsvU1VQQUJBU0VfVVJMfS9yZXN0L3YxL2FudW5j
+aW9zIiwganNvbj1hbm4sIGhlYWRlcnM9aGVhZGVycykKICAgICAgICBwcmludCgmI0YwIzlG
+I0FGIzgwIEFuw7FhZGlkbzogI3thbm5bJ3RpdGxlJ119IikKICAgIGV4Y2VwdCBFeGNlcHRp
+b24gYXMgZToKICAgICAgICBwcmludCgmI0YwIzlGIzkyI0EwIEVycm9yOiAje2V9IikKCnBy
+aW50KCInRjAjOUYjOThjIFByb2Nlc28gZmluYWxpemFkby4iKQ==
+"""
 
-headers = {
-    "apikey": SUPABASE_KEY,
-    "Authorization": f"Bearer {SUPABASE_KEY}",
-    "Content-Type": "application/json",
-    "Prefer": "return=minimal"
-}
-
-c1 = "Camper"
-	
-	
-		
-	
-	
-
-	
-"
-c2 = "Gran Volumen"
-
-anuncios = [
-    {
-        "title": "Volkswagen T3 Westfalia (1988)",
-        "price": 14500,
-        "location": "Girona",
-        "year": 1988,
-        "km": 210000,
-        "sleeps": 4,
-        "type": c2,
-        "image": "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Clásicos"
-    },
-    {
-        "title": "Mercedes MB100 Camperizada",
-        "price": 8900,
-        "location": "Asturias",
-        "year": 1995,
-        "km": 185000,
-        "sleeps": 2,
-        "type": c1,
-        "image": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Comunidad",
-        "source": "Agregador Clásicos"
-    },
-    {
-        "title": "Ford Transit Mk3 Vintage",
-        "price": 6500,
-        "location": "Granada",
-        "year": 1992,
-        "km": 160000,
-        "sleeps": 3,
-        "type": c1,
-        "image": "https://images.unsplash.com/photo-1516939884455-1445c8652f83?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Clásicos"
-    }
-]
-
-print("Enviando datos...")
-
-for a in anuncios:
-    try:
-        r = requests.post(f"{SUPABASE_URL}/rest/v1/anuncios", json=a, headers=headers)
-        print(f"Resultado: {r.status_code}")
-    except Exception as e:
-        print(f"Error: {e}")
-
-print("Proceso completado.")
+clean_b64 = "".join(code_b64.split())
+exec(base64.b64decode(clean_b64).decode('utf-8'))
