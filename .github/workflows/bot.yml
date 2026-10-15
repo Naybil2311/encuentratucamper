@@ -7,18 +7,18 @@ on:
 
 jobs:
   run-bot:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
-      - name: Descargar código
-        uses: actions/checkout@v4.2.2
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
 
       - name: Configurar Python
-        uses: actions/setup-python@v5.3.0
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Instalar librerías
+      - name: Instalar solicitudes HTTP
         run: pip install requests
 
-      - name: Ejecutar Bot
+      - name: Ejecutar script de extracción
         run: python bot.py
