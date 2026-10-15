@@ -10,6 +10,7 @@ headers = {
     "Prefer": "return=minimal"
 }
 
+# Enviamos únicamente las columnas aseguradas en tu base de datos Supabase
 anuncios_antiguos = [
     {
         "title": "Volkswagen T3 Joker Westfalia (1988)",
@@ -79,10 +80,10 @@ for anuncio in anuncios_antiguos:
     try:
         res = requests.post(f"{SUPABASE_URL}/rest/v1/anuncios", json=anuncio, headers=headers)
         if res.status_code in [200, 201]:
-            print(f"✅ Añadido correctamente: {anuncio['title']}")
+            print(f"✅ Añadido: {anuncio['title']}")
         else:
-            print(f"⚠️ Error {res.status_code} en '{anuncio['title']}': {res.text}")
+            print(f"⚠️ Error HTTP {res.status_code}: {res.text}")
     except Exception as e:
-        print(f"❌ Fallo al conectar: {e}")
+        print(f"❌ Error al conectar: {e}")
 
 print("🎉 Proceso finalizado.")
