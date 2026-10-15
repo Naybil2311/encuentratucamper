@@ -1,4 +1,3 @@
-import os
 import requests
 
 SUPABASE_URL = "https://ecidgvwrog9savmdzj1z.supabase.co"
@@ -11,10 +10,9 @@ headers = {
     "Prefer": "return=minimal"
 }
 
-# Anuncios adaptados a las columnas básicas de tu tabla
 anuncios_antiguos = [
     {
-        "title": "Volkswagen T3 Westfalia",
+        "title": "Volkswagen T3 Joker Westfalia (1988)",
         "price": 14500,
         "location": "Girona",
         "year": 1988,
@@ -26,7 +24,7 @@ anuncios_antiguos = [
         "source": "Agregador Clásicos"
     },
     {
-        "title": "Mercedes MB100 Camperizada",
+        "title": "Mercedes MB100 Camperizada Homologada",
         "price": 8900,
         "location": "Asturias",
         "year": 1995,
@@ -44,17 +42,45 @@ anuncios_antiguos = [
         "image": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80",
         "seller_type": "Comunidad",
         "source": "Agregador Clásicos"
+    },
+    {
+        "title": "Ford Transit Mk3 Camper
+	
+	
+		
+	
+	
+		Activar hasta 5,60% cashback
+	
+ Vintage",
+        "price": 6500,
+        "location": "Granada",
+        "year": 1992,
+        "km": 160000,
+        "sleeps": 3,
+        "type": "Furgoneta Camper
+	
+	
+		
+	
+	
+		Activar hasta 5,60% cashback
+	
+",
+        "image": "https://images.unsplash.com/photo-1516939884455-1445c8652f83?auto=format&fit=crop&w=800&q=80",
+        "seller_type": "Particular",
+        "source": "Agregador Clásicos"
     }
 ]
 
-print("🚀 Conectando con Supabase...")
+print("🚀 Conectando con Supabase e insertando anuncios...")
 
 for anuncio in anuncios_antiguos:
     try:
         url = f"{SUPABASE_URL}/rest/v1/anuncios"
-        response = requests.post(url, json=anuncio, headers=headers)
-        print(f"Respuesta HTTP {response.status_code}: {response.text}")
-    except Exception as err:
-        print(f"Error en la petición: {err}")
+        res = requests.post(url, json=anuncio, headers=headers)
+        print(f"Respuesta HTTP {res.status_code} para '{anuncio['title']}'")
+    except Exception as e:
+        print(f"Error: {e}")
 
-print("🎉 Proceso finalizado con éxito.")
+print("🎉 Proceso finalizado.")
