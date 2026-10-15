@@ -18,7 +18,7 @@ anuncios = [
         "year": 1988,
         "km": 210000,
         "sleeps": 4,
-        "type": "Camper
+        "type": "Camper"
 	
 	
 		
