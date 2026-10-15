@@ -1,42 +1,65 @@
-import base64
 import requests
 
-b64_code = (
-    "aW1wb3J0IHJlcXVlc3RzCgpTVVBBQkFTRV9VUkwgPSAiaHR0cHM6Ly9lY2lkZ3Z3cm9nOXNhd"
-    "W1kemoxei5zdXBhYmFzZS5jbyIKU1VQQUJBU0VfS0VZID0gInNiX3B1Ymxpc2hhYmxlX2VD"
-    "SURnVldSb2c5c2F2bURaSjFaLVFfUlJZSUhNajQiCgpoZWFkZXJzID0gewogICAgImFwaWtl"
-    "eSI6IFNVUEFCQVNFX0tFWSwKICAgICJBdXRob3JpemF0aW9uIjogZiJCZWFyZXIge1NVUEFC"
-    "QVNFX0tFWX0iLAogICAgIkNvbnRlbnQtVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIiwKICAg"
-    "ICJQcmVmZXIiOiAicmV0dXJuPW1pbmltYWwiCn0KC2FudW5jaW9zID0gWwogICAgewogICAg
-    "ICAgICJ0aXRsZSI6ICJWb2xrc3dhZ2VuIFQzIFdlc3RmYWxpYSAoMTk4OCkiLAogICAgICAg"
-    "ICJwcmljZSI6IDE0NTAwLAogICAgICAgICJsb2NhdGlvbiI6ICJHaXJvbmEiLAogICAgICAg"
-    "ICJ5ZWFyIjogMTk4OCwKICAgICAgICAia20iOiAyMTAwMDAsCiAgICAgICAgInNsZWVwcyI6"
-    "IDQsCiAgICAgICAgInR5cGUiOiAiR3JhbiBWb2x1bWVuIiwKICAgICAgICAiaW1hZ2UiOiAi"
-    "aHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29tL3Bob3RvLTE1MjM5ODczNTU1MjMtYzdiNWIw"
-    "ZGQ5MGE3P2F1dG89Zm9ybWF0JmZpdD1jcm9wJnc9ODAwJnE9ODAiLAogICAgICAgICJzZWxs"
-    "ZXJfdHlwZSI6ICJQYXJ0aWN1bGFyIiwKICAgICAgICAic291cmNlIjogIkFncmVnYWRvciBD"
-    "bGFzaWNvcyIKICAgIH0sCiAgICB7CiAgICAgICAgInRpdGxlIjogIk1lcmNlZGVzIE1CMTAw"
-    "IENhbXBlcml6YWRhIiwKICAgICAgICAicHJpY2UiOiA4OTAwLAogICAgICAgICJsb2NhdGlv"
-    "biI6ICJBc3R1cmlhcyIsCiAgICAgICAgInllYXIiOiAxOTk1LAogICAgICAgICJrbSI6IDE4"
-    "NTAwMCwKICAgICAgICAic2xlZXBzIjogMiwKICAgICAgICAidHlwZSI6ICJGdXJnb25ldGEg"
-    "Q2FtcGVyIiwKICAgICAgICAiaW1hZ2UiOiAiaHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29t"
-    "L3Bob3RvLTE0Njk4NTQ1MjMwODYtY2MwMmY1ZGQ4ODAwP2F1dG89Zm9ybWF0JmZpdD1jcm9w"
-    "Jnc9ODAwJnE9ODAiLAogICAgICAgICJzZWxsZXJfdHlwZSI6ICJDb211bmlkYWQiLAogICAg"
-    "ICAgICJzb3VyY2UiOiAiQWdyZWdhZG9yIENsYXNpY29zIgogICAgfSwKICAgIHsKICAgICAg"
-    "ICAidGl0bGUiOiAiRm9yZCBUcmFuc2l0IE1rMyBWaW50YWdlIiwKICAgICAgICAicHJpY2Ui"
-    "OiA2NTAwLAogICAgICAgICJsb2NhdGlvbiI6ICJHcmFuYWRhIiwKICAgICAgICAieWVhciI6"
-    "IDE5OTIsCiAgICAgICAgImttIjogMTYwMDAwLAogICAgICAgICJzbGVlcHMiOiAzLAogICAg"
-    "ICAgICJ0eXBlIjogIkZ1cmdvbmV0YSBDYW1wZXIiLAogICAgICAgICJpbWFnZSI6ICJodHRw"
-    "czovL2ltYWdlcy51bnNwbGFzaC5jb20vcGhvdG8tMTUxNjkzOTg4NDQ1NS0xNDQ1Yzg2NTJm"
-    "ODM/YXV0bz1mb3JtYXQmZml0PWNyb3Amdz04MDAmcT04MCIsCiAgICAgICAgInNlbGxlcl90"
-    "eXBlIjogIlBhcnRpY3VsYXIiLAogICAgICAgICJzb3VyY2UiOiAiQWdyZWdhZG9yIENsYXNp"
-    "Y29zIgogICAgfQpdCgpwcmludCgiRW52aWFuZG8gYW51bmNpb3MgYW50aWd1b3MgYSBTdXBh"
-    "YmFzZS4uLiIpCgpmb3IgYW5uIGluIGFudW5jaW9zOgogICAgdHJ5OgogICAgICAgIHJlcyA9"
-    "IHJlcXVlc3RzLnBvc3QoZiJ7U1VQQUJBU0VfVVJMfS9yZXN0L3YxL2FudW5jaW9zIiwganNv"
-    "bj1hbm4sIGhlYWRlcnM9aGVhZGVycykKICAgICAgICBwcmludCgmI0YwIzlGI0FGIzgwIEF1"
-    "YWRpZG86ICN7YW5uFsd0aXRsZSddfSIpCiAgICBleGNlcHQgRXhjZXB0aW9uIGFzIGU6CiAg"
-    "ICAgICAgcHJpbnQoZyIjRjAjOUYjOTIjQTAgRXJyb3I6ICN7ZX0iKQoKcHJpbnQoIlByb2Nl"
-    "c28gZmluYWxpemFkby4iKQ=="
-)
+SUPABASE_URL = "https://ecidgvwrog9savmdzj1z.supabase.co"
+SUPABASE_KEY = "sb_publishable_eCIDgVWRog9savmDZJ1Z-Q_RRYIHMj4"
 
-exec(base64.b64decode(b64_code.encode('ascii')).decode('utf-8'))
+headers = {
+    "apikey": SUPABASE_KEY,
+    "Authorization": f"Bearer {SUPABASE_KEY}",
+    "Content-Type": "application/json",
+    "Prefer": "return=minimal"
+}
+
+# Construimos los tipos concatenando variables para evitar la inyección de la extensión de cashback
+t1 = "Furgoneta" + " " + "Camper"
+t2 = "Gran" + " " + "Volumen"
+
+anuncios = [
+    {
+        "title": "Volkswagen T3 Westfalia (1988)",
+        "price": 14500,
+        "location": "Girona",
+        "year": 1988,
+        "km": 210000,
+        "sleeps": 4,
+        "type": t2,
+        "image": "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80",
+        "seller_type": "Particular",
+        "source": "Agregador Clasicos"
+    },
+    {
+        "title": "Mercedes MB100 Camperizada",
+        "price": 8900,
+        "location": "Asturias",
+        "year": 1995,
+        "km": 185000,
+        "sleeps": 2,
+        "type": t1,
+        "image": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80",
+        "seller_type": "Comunidad",
+        "source": "Agregador Clasicos"
+    },
+    {
+        "title": "Ford Transit Mk3 Vintage",
+        "price": 6500,
+        "location": "Granada",
+        "year": 1992,
+        "km": 160000,
+        "sleeps": 3,
+        "type": t1,
+        "image": "https://images.unsplash.com/photo-1516939884455-1445c8652f83?auto=format&fit=crop&w=800&q=80",
+        "seller_type": "Particular",
+        "source": "Agregador Clasicos"
+    }
+]
+
+print("Iniciando envio a Supabase...")
+
+for a in anuncios:
+    try:
+        r = requests.post(f"{SUPABASE_URL}/rest/v1/anuncios", json=a, headers=headers)
+        print(f"Resultado: {r.status_code}")
+    except Exception as e:
+        print(f"Error: {e}")
+
+print("Proceso completado.")
