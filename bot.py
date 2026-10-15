@@ -1,6 +1,5 @@
 import requests
 
-# URL real del proyecto activo en la captura de Supabase
 SUPABASE_URL = "https://agazyoihnkienkywbpxe.supabase.co"
 SUPABASE_KEY = "sb_publishable_eCIDgVWRog9savmDZJ1Z-Q_RRYIHMj4"
 
@@ -11,11 +10,87 @@ headers = {
     "Prefer": "return=minimal"
 }
 
+# Categorías
 cat_camper = "Camper"
 cat_gran_volumen = "Gran Volumen"
 cat_autocaravana = "Autocaravana"
 
 anuncios = [
+    # --- AUTOCARAVANAS MULTIMARCA ---
+    {
+        "title": "Benimar Tessoro 463 UP (2021)",
+        "price": 54900,
+        "location": "Madrid",
+        "year": 2021,
+        "km": 42000,
+        "sleeps": 5,
+        "type": cat_autocaravana,
+        "image": "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80",
+        "seller_type": "Particular",
+        "source": "Agregador Multimarca"
+    },
+    {
+        "title": "McLouis Glamys 22 Capuchina (2018)",
+        "price": 43500,
+        "location": "Sevilla",
+        "year": 2018,
+        "km": 68000,
+        "sleeps": 7,
+        "type": cat_autocaravana,
+        "image": "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=800&q=80",
+        "seller_type": "Particular",
+        "source": "Agregador Multimarca"
+    },
+    {
+        "title": "Chausson Titanium 640 Perfilada (2020)",
+        "price": 51200,
+        "location": "Barcelona",
+        "year": 2020,
+        "km": 35000,
+        "sleeps": 4,
+        "type": cat_autocaravana,
+        "image": "https://images.unsplash.com/photo-1527786356703-4b100091cd2c?auto=format&fit=crop&w=800&q=80",
+        "seller_type": "Comunidad",
+        "source": "Agregador Multimarca"
+    },
+    {
+        "title": "Hymer Mobil B544 Clásica (1990)",
+        "price": 13900,
+        "location": "Alicante",
+        "year": 1990,
+        "km": 178000,
+        "sleeps": 5,
+        "type": cat_autocaravana,
+        "image": "https://images.unsplash.com/photo-1513311068348-19c8fbdc0bb6?auto=format&fit=crop&w=800&q=80",
+        "seller_type": "Particular",
+        "source": "Agregador Clasicos"
+    },
+    {
+        "title": "Burstner Ixeo Time IT 710 (2015)",
+        "price": 41900,
+        "location": "Valencia",
+        "year": 2015,
+        "km": 89000,
+        "sleeps": 4,
+        "type": cat_autocaravana,
+        "image": "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80",
+        "seller_type": "Particular",
+        "source": "Agregador Multimarca"
+    },
+    {
+        "title": "Rimor Seal 5 Capuchina (2019)",
+        "price": 46000,
+        "location": "Zaragoza",
+        "year": 2019,
+        "km": 54000,
+        "sleeps": 6,
+        "type": cat_autocaravana,
+        "image": "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=800&q=80",
+        "seller_type": "Particular",
+        "source": "Agregador Multimarca"
+    },
+
+    # --- CAMPERS Y GRAN VOLUMEN ---
     {
         "title": "Volkswagen T3 Westfalia (1988)",
         "price": 14500,
@@ -51,70 +126,10 @@ anuncios = [
         "image": "https://images.unsplash.com/photo-1516939884455-1445c8652f83?auto=format&fit=crop&w=800&q=80",
         "seller_type": "Particular",
         "source": "Agregador Clasicos"
-    },
-    {
-        "title": "Volkswagen T2 Bay Window (1976)",
-        "price": 24000,
-        "location": "Málaga",
-        "year": 1976,
-        "km": 120000,
-        "sleeps": 2,
-        "type": cat_camper,
-        "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Clasicos"
-    },
-    {
-        "title": "Hymer Mobil B544 Clásica (1990)",
-        "price": 13900,
-        "location": "Alicante",
-        "year": 1990,
-        "km": 178000,
-        "sleeps": 5,
-        "type": cat_autocaravana,
-        "image": "https://images.unsplash.com/photo-1513311068348-19c8fbdc0bb6?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Clasicos"
-    },
-    {
-        "title": "Fiat Ducato Dethleffs Perfilada (1993)",
-        "price": 11500,
-        "location": "Zaragoza",
-        "year": 1993,
-        "km": 192000,
-        "sleeps": 4,
-        "type": cat_autocaravana,
-        "image": "https://images.unsplash.com/photo-1527786356703-4b100091cd2c?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Clasicos"
-    },
-    {
-        "title": "Peugeot J5 Burstner Capuchina (1991)",
-        "price": 10800,
-        "location": "Cantabria",
-        "year": 1991,
-        "km": 165000,
-        "sleeps": 6,
-        "type": cat_autocaravana,
-        "image": "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Comunidad",
-        "source": "Agregador Clasicos"
-    },
-    {
-        "title": "Ford Transit Rimor Capuchina (1994)",
-        "price": 12200,
-        "location": "Tarragona",
-        "year": 1994,
-        "km": 180000,
-        "sleeps": 5,
-        "type": cat_autocaravana,
-        "image": "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Clasicos"
     }
 ]
 
-print("Iniciando insercion en Supabase...")
+print("Iniciando insercion multimarca en Supabase...")
 
 for a in anuncios:
     try:
@@ -123,4 +138,4 @@ for a in anuncios:
     except Exception as e:
         print(f"Error enviando {a['title']}: {e}")
 
-print("Proceso completado.")
+print("Proceso completado con exito.")
