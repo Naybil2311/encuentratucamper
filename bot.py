@@ -1,8 +1,5 @@
-import os
-import time
 import requests
 
-# Datos de tu base de datos de Supabase
 SUPABASE_URL = "https://ecidgvwrog9savmdzj1z.supabase.co"
 SUPABASE_KEY = "sb_publishable_eCIDgVWRog9savmDZJ1Z-Q_RRYIHMj4"
 
@@ -13,7 +10,6 @@ headers = {
     "Prefer": "return=minimal"
 }
 
-# Anuncios de muestra con fechas y campers antiguas para poblar la web
 anuncios_antiguos = [
     {
         "title": "Volkswagen T3 Joker Westfalia (1988)",
@@ -80,10 +76,13 @@ anuncios_antiguos = [
 print("🚀 Enviando anuncios de ocasión antiguos a Supabase...")
 
 for anuncio in anuncios_antiguos:
-    res = requests.post(f"{SUPABASE_URL}/rest/v1/anuncios", json=anuncio, headers=headers)
-    if res.status_code in [200, 201]:
-        print(f"✅ Añadido: {anuncio['title']}")
-    else:
-        print(f"⚠️ Estado: {res.status_code}")
+    try:
+        res = requests.post(f"{SUPABASE_URL}/rest/v1/anuncios", json=anuncio, headers=headers)
+        if res.status_code in [200, 201]:
+            print(f"✅ Añadido correctamente: {anuncio['title']}")
+        else:
+            print(f"⚠️ Error {res.status_code} en '{anuncio['title']}': {res.text}")
+    except Exception as e:
+        print(f"❌ Fallo al conectar: {e}")
 
 print("🎉 Proceso finalizado.")
