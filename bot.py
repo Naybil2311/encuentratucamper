@@ -16,7 +16,7 @@ c1 = "Camper"
 		
 	
 	
-		Activar hasta 5,60% cashback
+
 	
 "
 c2 = "Gran Volumen"
