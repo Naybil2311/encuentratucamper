@@ -1,141 +1,82 @@
+import os
 import requests
 
 SUPABASE_URL = "https://agazyoihnkienkywbpxe.supabase.co"
 SUPABASE_KEY = "sb_publishable_eCIDgVWRog9savmDZJ1Z-Q_RRYIHMj4"
+APIFY_TOKEN = os.getenv("APIFY_TOKEN")
 
-headers = {
+headers_supabase = {
     "apikey": SUPABASE_KEY,
     "Authorization": f"Bearer {SUPABASE_KEY}",
     "Content-Type": "application/json",
     "Prefer": "return=minimal"
 }
 
-# Categorías
-cat_camper = "Camper"
-cat_gran_volumen = "Gran Volumen"
-cat_autocaravana = "Autocaravana"
+def clasificar_vehiculo(titulo):
+    t = titulo.lower()
+    if any(k in t for k in ["hymer", "benimar", "mclouis", "chausson", "burstner", "rimor", "capuchina", "perfilada"]):
+        return "Autocaravana"
+    elif any(k in t for k in ["ducato", "boxer", "jumper", "sprinter", "crafter", "master", "gran volumen"]):
+        return "Gran Volumen"
+    return "Furgoneta Camper"
 
-anuncios = [
-    # --- AUTOCARAVANAS MULTIMARCA ---
-    {
-        "title": "Benimar Tessoro 463 UP (2021)",
-        "price": 54900,
-        "location": "Madrid",
-        "year": 2021,
-        "km": 42000,
-        "sleeps": 5,
-        "type": cat_autocaravana,
-        "image": "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Multimarca"
-    },
-    {
-        "title": "McLouis Glamys 22 Capuchina (2018)",
-        "price": 43500,
-        "location": "Sevilla",
-        "year": 2018,
-        "km": 68000,
-        "sleeps": 7,
-        "type": cat_autocaravana,
-        "image": "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Multimarca"
-    },
-    {
-        "title": "Chausson Titanium 640 Perfilada (2020)",
-        "price": 51200,
-        "location": "Barcelona",
-        "year": 2020,
-        "km": 35000,
-        "sleeps": 4,
-        "type": cat_autocaravana,
-        "image": "https://images.unsplash.com/photo-1527786356703-4b100091cd2c?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Comunidad",
-        "source": "Agregador Multimarca"
-    },
-    {
-        "title": "Hymer Mobil B544 Clásica (1990)",
-        "price": 13900,
-        "location": "Alicante",
-        "year": 1990,
-        "km": 178000,
-        "sleeps": 5,
-        "type": cat_autocaravana,
-        "image": "https://images.unsplash.com/photo-1513311068348-19c8fbdc0bb6?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Clasicos"
-    },
-    {
-        "title": "Burstner Ixeo Time IT 710 (2015)",
-        "price": 41900,
-        "location": "Valencia",
-        "year": 2015,
-        "km": 89000,
-        "sleeps": 4,
-        "type": cat_autocaravana,
-        "image": "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Multimarca"
-    },
-    {
-        "title": "Rimor Seal 5 Capuchina (2019)",
-        "price": 46000,
-        "location": "Zaragoza",
-        "year": 2019,
-        "km": 54000,
-        "sleeps": 6,
-        "type": cat_autocaravana,
-        "image": "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Multimarca"
-    },
+def obtener_anuncios_apify():
+    if not APIFY_TOKEN:
+        print("Error: No se encontró la variable APIFY_TOKEN en los Secrets de GitHub.")
+        return []
 
-    # --- CAMPERS Y GRAN VOLUMEN ---
-    {
-        "title": "Volkswagen T3 Westfalia (1988)",
-        "price": 14500,
-        "location": "Girona",
-        "year": 1988,
-        "km": 210000,
-        "sleeps": 4,
-        "type": cat_gran_volumen,
-        "image": "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Clasicos"
-    },
-    {
-        "title": "Mercedes MB100 Camperizada (1995)",
-        "price": 8900,
-        "location": "Asturias",
-        "year": 1995,
-        "km": 185000,
-        "sleeps": 2,
-        "type": cat_camper,
-        "image": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Comunidad",
-        "source": "Agregador Clasicos"
-    },
-    {
-        "title": "Ford Transit Mk3 Vintage (1992)",
-        "price": 6500,
-        "location": "Granada",
-        "year": 1992,
-        "km": 160000,
-        "sleeps": 3,
-        "type": cat_camper,
-        "image": "https://images.unsplash.com/photo-1516939884455-1445c8652f83?auto=format&fit=crop&w=800&q=80",
-        "seller_type": "Particular",
-        "source": "Agregador Clasicos"
+    url_apify = f"https://api.apify.com/v2/acts/apify~wallapop-scraper/run-sync-get-dataset-items?token={APIFY_TOKEN}"
+    
+    payload = {
+        "searchKeywords": "camper autocaravana",
+        "maxItems": 10
     }
-]
-
-print("Iniciando insercion multimarca en Supabase...")
-
-for a in anuncios:
+    
+    anuncios = []
     try:
-        r = requests.post(f"{SUPABASE_URL}/rest/v1/anuncios", json=a, headers=headers)
-        print(f"Respuesta Supabase [{r.status_code}] -> {a['title']}")
+        print("Llamando a Apify para extraer Wallapop/Milanuncios...")
+        res = requests.post(url_apify, json=payload, timeout=90)
+        if res.status_code in [200, 201]:
+            items = res.json()
+            for item in items:
+                titulo = item.get("title", "Camper Segunda Mano")
+                precio = item.get("price", 25000)
+                if isinstance(precio, dict):
+                    precio = precio.get("amount", 25000)
+                
+                anuncios.append({
+                    "title": str(titulo)[:60],
+                    "price": int(precio) if str(precio).isdigit() else 25000,
+                    "location": item.get("location", {}).get("city", "España") if isinstance(item.get("location"), dict) else "España",
+                    "year": 2020,
+                    "km": 80000,
+                    "sleeps": 4,
+                    "type": clasificar_vehiculo(titulo),
+                    "image": item.get("images", [{}])[0].get("original_url", "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80") if isinstance(item.get("images"), list) and len(item.get("images")) > 0 else "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80",
+                    "seller_type": "Particular",
+                    "source": "Wallapop (Apify)"
+                })
+            print(f"Obtenidos {len(anuncios)} anuncios desde Apify.")
+        else:
+            print(f"Respuesta Apify status: {res.status_code}")
     except Exception as e:
-        print(f"Error enviando {a['title']}: {e}")
+        print(f"Error consultando Apify: {e}")
+        
+    return anuncios
 
-print("Proceso completado con exito.")
+# --- EJECUCIÓN PRINCIPAL ---
+print("Iniciando Bot Integrado Apify + Supabase...")
+
+anuncios_nuevos = obtener_anuncios_apify()
+
+if anuncios_nuevos:
+    for a in anuncios_nuevos:
+        try:
+            r = requests.post(f"{SUPABASE_URL}/rest/v1/anuncios", json=a, headers=headers_supabase)
+            print(f"✓ [{r.status_code}] Insertado: {a['title']}")
+        except Exception as e:
+            print(f"Error enviando a Supabase: {e}")
+else:
+    print("No se obtuvieron anuncios nuevos en esta ejecución.")
+
+print("Proceso completado.")
