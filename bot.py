@@ -22,7 +22,7 @@ def clasificar_vehiculo(titulo):
 
 def obtener_anuncios_apify():
     if not APIFY_TOKEN:
-        print("Aviso: No se encontro APIFY_TOKEN. Se omitira Apify.")
+        print("Aviso: No se encontró APIFY_TOKEN en los Secrets de GitHub.")
         return []
 
     url_apify = f"https://api.apify.com/v2/actors/louisdeconinck~wallapop-scraper/run-sync-get-dataset-items?token={APIFY_TOKEN}"
@@ -30,10 +30,13 @@ def obtener_anuncios_apify():
     
     anuncios = []
     try:
+        print("Consultando Apify para Wallapop...")
         res = requests.post(url_apify, json=payload, timeout=120)
+        print(f"Respuesta HTTP Apify: {res.status_code}")
+        
         if res.status_code in [200, 201]:
             items = res.json()
-            if isinstance(items, list):
+            if isinstance(items, list) and len(items) > 0:
                 for item in items:
                     titulo = item.get("title") or item.get("name") or "Camper Segunda Mano"
                     
@@ -56,8 +59,8 @@ def obtener_anuncios_apify():
                         elif isinstance(first_img, str):
                             imagen = first_img
 
-                    # Enlace real a Wallapop
-                    link_web = item.get("web_url") or item.get("share_url") or item.get("url") or "https://wallapop.com"
+                    # Obtener la URL pública del anuncio
+                    link_web = item.get("url") or item.get("web_url") or item.get("share_url") or item.get("link") or "https://wallapop.com"
 
                     anuncios.append({
                         "title": str(titulo)[:60],
@@ -68,24 +71,32 @@ def obtener_anuncios_apify():
                         "sleeps": 4,
                         "type": clasificar_vehiculo(titulo),
                         "image": imagen,
-                        "url": link_web,  # <--- Guarda el enlace original aquí
+                        "url": link_web,  # Mapeado a la columna 'url'
                         "seller_type": "Particular",
                         "source": "Wallapop"
                     })
+                print(f"✓ Extraídos {len(anuncios)} anuncios de Apify.")
+            else:
+                print("Apify respondió correctamente pero no devolvió elementos.")
+        else:
+            print(f"Error HTTP de Apify: {res.text[:200]}")
     except Exception as e:
-        print(f"Error consultando Apify: {e}")
+        print(f"Excepción al consultar Apify: {e}")
         
     return anuncios
 
-# --- EJECUCIÓN ---
+# --- EJECUCIÓN PRINCIPAL ---
 print("Iniciando Bot de Inserción...")
 anuncios_totales = obtener_anuncios_apify()
 
-for a in anuncios_totales:
-    try:
-        r = requests.post(f"{SUPABASE_URL}/rest/v1/anuncios", json=a, headers=headers_supabase)
-        print(f"✓ [{r.status_code}] Guardado: {a['title']} | URL: {a['url']}")
-    except Exception as e:
-        print(f"Error: {e}")
+if anuncios_totales:
+    for a in anuncios_totales:
+        try:
+            r = requests.post(f"{SUPABASE_URL}/rest/v1/anuncios", json=a, headers=headers_supabase)
+            print(f"✓ [{r.status_code}] Guardado en Supabase: {a['title']} | URL: {a['url']}")
+        except Exception as e:
+            print(f"Error en envío a Supabase: {e}")
+else:
+    print("No hay anuncios nuevos para insertar.")
 
 print("Proceso completado.")
