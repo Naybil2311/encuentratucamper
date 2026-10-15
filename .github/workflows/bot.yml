@@ -20,7 +20,9 @@ jobs:
       - name: Instalar librerias necesarias
         run: |
           python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 lxml
+          pip install requests
 
       - name: Ejecutar script de scraping
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
         run: python bot.py
