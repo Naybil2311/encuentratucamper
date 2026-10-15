@@ -26,7 +26,7 @@ anuncios = [
 	
 		Activar hasta 5,60% cashback
 	
-",
+,
         "image": "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80",
         "seller_type": "Particular",
         "source": "Agregador"
