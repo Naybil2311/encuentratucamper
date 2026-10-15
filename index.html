@@ -249,6 +249,15 @@
             const ad = allAds[index];
             if (!ad) return;
 
+            const urlDestino = ad.url || ad.source_url;
+            const enlaceContacto = urlDestino 
+                ? `<a href="${urlDestino}" target="_blank" rel="noopener noreferrer" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-2.5 rounded-xl transition-colors inline-flex items-center shadow-sm">
+                    <i class="fa-solid fa-up-right-from-square mr-2"></i> Ver Anuncio Original en ${ad.source || 'Portal'}
+                   </a>`
+                : `<button onclick="alert('Anuncio directo. Puedes publicar los datos de contacto en el futuro.')" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-2.5 rounded-xl transition-colors shadow-sm">
+                    <i class="fa-solid fa-envelope mr-2"></i> Contactar Vendedor
+                   </button>`;
+
             const content = `
                 <div class="h-64 sm:h-80 bg-slate-100 relative">
                     <img src="${ad.image || 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80'}" class="w-full h-full object-cover">
@@ -286,9 +295,7 @@
 
                     <div class="flex items-center justify-between pt-4 border-t border-slate-100">
                         <span class="text-xs text-slate-400">Origen de la publicación: <strong class="text-slate-600">${ad.source || 'Directo'}</strong></span>
-                        <button onclick="alert('Contactando con el vendedor de: ${ad.title}')" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-2.5 rounded-xl transition-colors shadow-sm">
-                            <i class="fa-solid fa-envelope mr-2"></i> Contactar
-                        </button>
+                        ${enlaceContacto}
                     </div>
                 </div>
             `;
@@ -352,5 +359,3 @@
         // Cargar anuncios al iniciar la página
         fetchAds();
     </script>
-</body>
-</html>
