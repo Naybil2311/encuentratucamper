@@ -158,6 +158,18 @@
         </div>
     </div>
 
+    <!-- Modal Detalle del Anuncio -->
+    <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl relative max-h-[90vh] flex flex-col">
+            <button onclick="toggleDetailModal(false)" class="absolute top-4 right-4 z-10 bg-slate-900/60 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-slate-900 transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="detail-content" class="overflow-y-auto">
+                <!-- Se llena dinámicamente con JavaScript -->
+            </div>
+        </div>
+    </div>
+
     <!-- Script de Integración Supabase -->
     <script>
         const SUPABASE_URL = 'https://agazyoihnkienkywbpxe.supabase.co';
@@ -201,8 +213,8 @@
                 return;
             }
 
-            grid.innerHTML = ads.map(ad => `
-                <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
+            grid.innerHTML = ads.map((ad, idx) => `
+                <div onclick="openDetail(${idx})" class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer transform hover:-translate-y-1 flex flex-col">
                     <div class="h-48 bg-slate-100 relative overflow-hidden">
                         <img src="${ad.image || 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80'}" alt="${ad.title || 'Camper'}" class="w-full h-full object-cover">
                         <span class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md text-white text-xs font-semibold px-2.5 py-1 rounded-full">
@@ -226,11 +238,63 @@
 
                         <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
                             <span>Origen: <strong class="text-slate-600">${ad.source || 'Directo'}</strong></span>
-                            <span class="bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">${ad.seller_type || 'Particular'}</span>
+                            <span class="bg-brand-50 text-brand-700 px-2.5 py-1 rounded-full font-semibold">Ver detalle &rarr;</span>
                         </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function openDetail(index) {
+            const ad = allAds[index];
+            if (!ad) return;
+
+            const content = `
+                <div class="h-64 sm:h-80 bg-slate-100 relative">
+                    <img src="${ad.image || 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80'}" class="w-full h-full object-cover">
+                    <span class="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur-md text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                        ${ad.type || 'Camper'}
+                    </span>
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-slate-900 mb-1">${ad.title}</h2>
+                            <p class="text-sm text-slate-500"><i class="fa-solid fa-location-dot mr-1"></i> ${ad.location || 'España'}</p>
+                        </div>
+                        <p class="text-3xl font-black text-brand-600">${Number(ad.price || 0).toLocaleString('es-ES')} €</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100 mb-6 text-center">
+                        <div>
+                            <span class="block text-xs text-slate-400 uppercase font-semibold">Año</span>
+                            <span class="font-bold text-slate-800">${ad.year || 'N/D'}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs text-slate-400 uppercase font-semibold">Kilómetros</span>
+                            <span class="font-bold text-slate-800">${ad.km ? Number(ad.km).toLocaleString('es-ES') + ' km' : 'N/D'}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs text-slate-400 uppercase font-semibold">Plazas Dormir</span>
+                            <span class="font-bold text-slate-800">${ad.sleeps || 2}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs text-slate-400 uppercase font-semibold">Vendedor</span>
+                            <span class="font-bold text-slate-800">${ad.seller_type || 'Particular'}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                        <span class="text-xs text-slate-400">Origen de la publicación: <strong class="text-slate-600">${ad.source || 'Directo'}</strong></span>
+                        <button onclick="alert('Contactando con el vendedor de: ${ad.title}')" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-2.5 rounded-xl transition-colors shadow-sm">
+                            <i class="fa-solid fa-envelope mr-2"></i> Contactar
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('detail-content').innerHTML = content;
+            toggleDetailModal(true);
         }
 
         function filterAds() {
@@ -250,6 +314,10 @@
 
         function toggleModal(show) {
             document.getElementById('sell-modal').classList.toggle('hidden', !show);
+        }
+
+        function toggleDetailModal(show) {
+            document.getElementById('detail-modal').classList.toggle('hidden', !show);
         }
 
         async function publicarAnuncio(event) {
