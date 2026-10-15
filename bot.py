@@ -34,7 +34,7 @@ def obtener_anuncios_apify():
     
     anuncios = []
     try:
-        print("Llamando a Apify para extraer Wallapop/Milanuncios...")
+        print("Llamando a Apify para extraer ofertas de la red...")
         res = requests.post(url_apify, json=payload, timeout=90)
         if res.status_code in [200, 201]:
             items = res.json()
