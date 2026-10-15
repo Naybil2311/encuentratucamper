@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <!-- Supabase JS Client library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
         tailwind.config = {
@@ -169,40 +171,24 @@
             <!-- Stylized Camper Vanlife Traveler Character directly looking at reader -->
             <div class="absolute right-2 bottom-0 hidden lg:block w-80 h-full pointer-events-none">
                 <svg viewBox="0 0 300 350" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full object-contain">
-                    <!-- Camper Hat / Beanie -->
                     <path d="M90 100 C90 40, 210 40, 210 100 Z" fill="#FF5722" stroke="#000000" stroke-width="6"/>
                     <rect x="80" y="90" width="140" height="20" rx="6" fill="#FFE600" stroke="#000000" stroke-width="5"/>
-                    
-                    <!-- Head -->
                     <circle cx="150" cy="140" r="60" fill="#FFC107" stroke="#000000" stroke-width="6"/>
-                    
-                    <!-- EYES LOOKING DIRECTLY FRONT AT READER -->
                     <circle cx="125" cy="135" r="14" fill="white" stroke="#000000" stroke-width="5"/>
                     <circle cx="125" cy="135" r="6" fill="#000000"/>
                     <circle cx="123" cy="133" r="2" fill="white"/>
-
                     <circle cx="175" cy="135" r="14" fill="white" stroke="#000000" stroke-width="5"/>
                     <circle cx="175" cy="135" r="6" fill="#000000"/>
                     <circle cx="173" cy="133" r="2" fill="white"/>
-
-                    <!-- Glasses / Camper Aviators -->
                     <rect x="105" y="120" width="40" height="30" rx="8" fill="none" stroke="#000000" stroke-width="5"/>
                     <rect x="155" y="120" width="40" height="30" rx="8" fill="none" stroke="#000000" stroke-width="5"/>
                     <line x1="145" y1="130" x2="155" y2="130" stroke="#000000" stroke-width="5"/>
-
-                    <!-- Big Smiling Mouth -->
                     <path d="M120 168 Q150 198 180 168" fill="white" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
                     <path d="M132 178 Q150 190 168 178" fill="#FF2E93"/>
-
-                    <!-- Beard details -->
                     <path d="M95 145 C90 200, 210 200, 205 145 C205 185, 95 185, 95 145 Z" fill="#000000"/>
-
-                    <!-- Body / Hoodie with Steering Wheel Badge -->
                     <path d="M60 350 C60 250, 240 250, 240 350 Z" fill="#10B981" stroke="#000000" stroke-width="6"/>
                     <circle cx="150" cy="275" r="25" fill="#FFE600" stroke="#000000" stroke-width="5"/>
                     <path d="M150 255 L150 295 M130 275 L170 275" stroke="#000000" stroke-width="5"/>
-
-                    <!-- Mini Speech Bubble -->
                     <rect x="15" y="40" width="100" height="40" rx="10" fill="#FFE600" stroke="#000000" stroke-width="5"/>
                     <text x="25" y="65" fill="#000000" font-weight="900" font-size="13">¡RUTAS 100%!</text>
                 </svg>
@@ -211,8 +197,6 @@
 
         <!-- FILTERS & AGGREGATOR CONTROLS -->
         <section class="space-y-4 mb-8">
-            
-            <!-- Source Tabs -->
             <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-2xl border-3 border-black card-brutal">
                 <div class="flex flex-wrap gap-2 w-full sm:w-auto">
                     <button onclick="filterSource('all')" id="tab-all" 
@@ -229,7 +213,6 @@
                     </button>
                 </div>
 
-                <!-- Sort Dropdown -->
                 <div class="flex items-center gap-2 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-200">
                     <span class="font-extrabold text-xs sm:text-sm text-slate-700 uppercase">Ordenar:</span>
                     <select id="sortSelect" onchange="filterAds()" class="bg-slate-100 font-extrabold text-black text-sm rounded-xl px-3 py-2 border-2 border-black focus:outline-none">
@@ -241,20 +224,14 @@
                 </div>
             </div>
 
-            <!-- Vehicle Type Categories -->
-            <div class="flex flex-wrap items-center gap-2 overflow-x-auto pb-2" id="categoryContainer">
-                <!-- Dynamically populated categories -->
-            </div>
+            <div class="flex flex-wrap items-center gap-2 overflow-x-auto pb-2" id="categoryContainer"></div>
 
-            <!-- ADVANCED CAMPER SPECIFIC FILTERS -->
             <div class="bg-white border-3 border-black rounded-2xl p-4 card-brutal">
                 <div class="flex items-center justify-between mb-3 border-b-2 border-slate-200 pb-2">
                     <span class="font-black text-sm uppercase text-black flex items-center gap-2">
                         <i class="fa-solid fa-sliders text-camper-orange"></i> Filtros Específicos Vanlife
                     </span>
-                    <button onclick="resetCamperFilters()" class="text-xs font-black text-camper-blue hover:underline">
-                        Limpiar Filtros Extra
-                    </button>
+                    <button onclick="resetCamperFilters()" class="text-xs font-black text-camper-blue hover:underline">Limpiar Filtros</button>
                 </div>
 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -301,7 +278,6 @@
                     </div>
                 </div>
             </div>
-
         </section>
 
         <!-- AGGREGATOR NOTICE -->
@@ -311,42 +287,31 @@
                     <i class="fa-solid fa-radar text-lg"></i>
                 </div>
                 <div>
-                    <h4 class="font-black text-black text-sm sm:text-base">Bot Rastreador de EncuentraTuCamper Activo</h4>
-                    <p class="text-xs sm:text-sm font-bold text-slate-800">Buscando ofertas de autocaravanas y campers en Wallapop, Milanuncios, Autoscout24 y Campify.</p>
+                    <h4 class="font-black text-black text-sm sm:text-base">Base de Datos Supabase Conectada</h4>
+                    <p class="text-xs sm:text-sm font-bold text-slate-800">Tus anuncios se sincronizan en tiempo real para todos los usuarios en la nube.</p>
                 </div>
             </div>
-            <span class="text-xs font-black bg-black text-white px-3 py-1.5 rounded-xl uppercase tracking-wider shrink-0">
-                Sincronizado Hoy
-            </span>
+            <span class="text-xs font-black bg-black text-white px-3 py-1.5 rounded-xl uppercase tracking-wider shrink-0">Online Supabase DB</span>
         </div>
 
-        <!-- SECTION TITLE & STATS -->
         <div class="flex items-center justify-between mb-6">
             <h2 id="sectionTitle" class="text-2xl sm:text-3xl font-black text-black uppercase tracking-tight flex items-center gap-2">
                 <i class="fa-solid fa-caravan text-camper-orange"></i> Campers y Autocaravanas Encontradas
             </h2>
-            <span id="resultsCount" class="font-extrabold text-sm sm:text-base bg-slate-200 text-black px-3.5 py-1.5 rounded-full border-2 border-black">
-                Cargando...
-            </span>
+            <span id="resultsCount" class="font-extrabold text-sm sm:text-base bg-slate-200 text-black px-3.5 py-1.5 rounded-full border-2 border-black">Cargando...</span>
         </div>
 
         <!-- ADS GRID -->
-        <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <!-- Dynamic Ad Cards injected here -->
-        </div>
+        <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
 
-        <!-- EMPTY STATE -->
         <div id="emptyState" class="hidden text-center py-16 bg-white rounded-3xl border-4 border-dashed border-slate-300 my-8">
             <div class="w-24 h-24 bg-camper-yellow border-3 border-black rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">
                 <i class="fa-solid fa-compass-drafting text-black"></i>
             </div>
             <h3 class="text-2xl font-black text-black mb-2">No hay campers con estos filtros</h3>
             <p class="font-bold text-slate-600 max-w-md mx-auto mb-6">Prueba a ampliar el rango de precio, cambiar de ubicación o ser el primero en anunciar tu camper.</p>
-            <button onclick="resetFilters()" class="bg-camper-blue hover:bg-blue-700 text-white font-extrabold px-6 py-3 rounded-xl border-2 border-black btn-brutal">
-                Restablecer Todo
-            </button>
+            <button onclick="resetFilters()" class="bg-camper-blue hover:bg-blue-700 text-white font-extrabold px-6 py-3 rounded-xl border-2 border-black btn-brutal">Restablecer Todo</button>
         </div>
-
     </main>
 
     <!-- FOOTER -->
@@ -360,9 +325,7 @@
                         </div>
                         <span class="text-2xl font-black text-white italic">Encuentra<span class="text-camper-orange">TuCamper</span></span>
                     </div>
-                    <p class="text-slate-300 font-medium text-sm leading-relaxed">
-                        El portal líder especializado en furgonetas camperizadas, gran volumen, autocaravanas perfiladas, capuchinas y módulos camper.
-                    </p>
+                    <p class="text-slate-300 font-medium text-sm leading-relaxed">El portal líder especializado en furgonetas camperizadas, gran volumen, autocaravanas perfiladas, capuchinas y módulos camper.</p>
                 </div>
                 <div>
                     <h4 class="font-black text-camper-yellow uppercase text-sm mb-3 tracking-wider">Portales Indexados</h4>
@@ -375,12 +338,7 @@
                 </div>
                 <div>
                     <h4 class="font-black text-camper-yellow uppercase text-sm mb-3 tracking-wider">Compromiso Vanlife</h4>
-                    <p class="text-xs text-slate-300 font-medium mb-3">
-                        Filtros reales pensados por y para amantes del viaje sobre ruedas: plazas para viajar, homologaciones, plazas para dormir y equipamiento técnico.
-                    </p>
-                    <div class="inline-block bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-200">
-                        🚌 Indexados hoy: <span class="text-camper-green font-black">2.450+ Vehículos</span>
-                    </div>
+                    <p class="text-xs text-slate-300 font-medium mb-3">Filtros reales pensados por y para amantes del viaje sobre ruedas: plazas para viajar, homologaciones, plazas para dormir y equipamiento técnico.</p>
                 </div>
             </div>
             <div class="border-t border-slate-800 pt-6 text-center text-xs font-bold text-slate-400">
@@ -392,19 +350,14 @@
     <!-- MODAL: DETALLES DEL VEHÍCULO -->
     <div id="detailModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white border-4 border-black rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto card-brutal relative">
-            <button onclick="closeDetailModal()" class="absolute top-4 right-4 z-10 bg-black text-white w-10 h-10 rounded-full font-black text-lg border-2 border-white flex items-center justify-center hover:bg-camper-orange">
-                &times;
-            </button>
-            <div id="modalContent" class="p-6 sm:p-8">
-                <!-- Dynamic Content Injected -->
-            </div>
+            <button onclick="closeDetailModal()" class="absolute top-4 right-4 z-10 bg-black text-white w-10 h-10 rounded-full font-black text-lg border-2 border-white flex items-center justify-center hover:bg-camper-orange">&times;</button>
+            <div id="modalContent" class="p-6 sm:p-8"></div>
         </div>
     </div>
 
     <!-- MODAL: PUBLICAR ANUNCIO CAMPER -->
     <div id="publishModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white border-4 border-black rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto card-brutal relative">
-            
             <div class="bg-camper-yellow border-b-4 border-black p-6 flex items-center justify-between sticky top-0 z-10">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-black text-camper-yellow rounded-xl flex items-center justify-center text-xl font-black">
@@ -412,26 +365,19 @@
                     </div>
                     <h3 class="text-2xl font-black text-black uppercase">Anunciar Tu Camper</h3>
                 </div>
-                <button onclick="closePublishModal()" class="bg-black text-white w-9 h-9 rounded-full font-black text-lg flex items-center justify-center hover:bg-camper-orange">
-                    &times;
-                </button>
+                <button onclick="closePublishModal()" class="bg-black text-white w-9 h-9 rounded-full font-black text-lg flex items-center justify-center hover:bg-camper-orange">&times;</button>
             </div>
 
             <form id="publishForm" onsubmit="handlePublishAd(event)" class="p-6 sm:p-8 space-y-5">
-                
-                <!-- Title -->
                 <div>
                     <label class="block font-black text-black text-sm uppercase mb-1">Título del Anuncio *</label>
-                    <input type="text" id="pubTitle" required placeholder="Ej: Volkswagen California T6.1 Beach 2.0 TDI 150cv" 
-                        class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
+                    <input type="text" id="pubTitle" required placeholder="Ej: Volkswagen California T6.1 Beach 2.0 TDI 150cv" class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
                 </div>
 
-                <!-- Price and Vehicle Type -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block font-black text-black text-sm uppercase mb-1">Precio (€) *</label>
-                        <input type="number" id="pubPrice" required placeholder="38500" 
-                            class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
+                        <input type="number" id="pubPrice" required placeholder="38500" class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
                     </div>
                     <div>
                         <label class="block font-black text-black text-sm uppercase mb-1">Tipo de Vehículo *</label>
@@ -446,26 +392,21 @@
                     </div>
                 </div>
 
-                <!-- Year, Km, Places -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block font-black text-black text-sm uppercase mb-1">Año *</label>
-                        <input type="number" id="pubYear" required placeholder="2019" 
-                            class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
+                        <input type="number" id="pubYear" required placeholder="2019" class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
                     </div>
                     <div>
                         <label class="block font-black text-black text-sm uppercase mb-1">Kilómetros *</label>
-                        <input type="number" id="pubKm" required placeholder="85000" 
-                            class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
+                        <input type="number" id="pubKm" required placeholder="85000" class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
                     </div>
                     <div>
                         <label class="block font-black text-black text-sm uppercase mb-1">Plazas Dormir *</label>
-                        <input type="number" id="pubSleepPlaces" required placeholder="4" min="1" max="8"
-                            class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
+                        <input type="number" id="pubSleepPlaces" required placeholder="4" min="1" max="8" class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
                     </div>
                 </div>
 
-                <!-- Condition and Location -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block font-black text-black text-sm uppercase mb-1">Estado</label>
@@ -477,19 +418,14 @@
                     </div>
                     <div>
                         <label class="block font-black text-black text-sm uppercase mb-1">Ubicación / Ciudad *</label>
-                        <input type="text" id="pubLocation" required placeholder="Ej: Barcelona, Madrid, San Sebastián" 
-                            class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
+                        <input type="text" id="pubLocation" required placeholder="Ej: Barcelona, Madrid, San Sebastián" class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
                     </div>
                 </div>
 
-                <!-- Image URL + Preset Selection -->
                 <div>
                     <label class="block font-black text-black text-sm uppercase mb-1">Foto del Vehículo *</label>
                     <div class="space-y-3">
-                        <input type="url" id="pubImageUrl" placeholder="Pega URL de imagen (o elige preajuste abajo)" 
-                            oninput="updateImagePreview(this.value)"
-                            class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white text-sm">
-                        
+                        <input type="url" id="pubImageUrl" placeholder="Pega URL de imagen (o elige preajuste abajo)" oninput="updateImagePreview(this.value)" class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white text-sm">
                         <div class="flex items-center gap-2 overflow-x-auto pb-1">
                             <span class="text-xs font-black text-slate-500 uppercase shrink-0">Preajustes rápidos:</span>
                             <button type="button" onclick="setPresetImage('vw_california')" class="px-2.5 py-1 bg-slate-200 hover:bg-slate-300 font-black text-xs rounded-lg border border-black shrink-0">🚌 VW California</button>
@@ -497,8 +433,6 @@
                             <button type="button" onclick="setPresetImage('autocaravana')" class="px-2.5 py-1 bg-slate-200 hover:bg-slate-300 font-black text-xs rounded-lg border border-black shrink-0">🏠 Autocaravana Knaus</button>
                             <button type="button" onclick="setPresetImage('caravana')" class="px-2.5 py-1 bg-slate-200 hover:bg-slate-300 font-black text-xs rounded-lg border border-black shrink-0">⛺ Caravana</button>
                         </div>
-
-                        <!-- Preview Container -->
                         <div class="w-full h-40 bg-slate-100 border-2 border-dashed border-slate-400 rounded-xl flex items-center justify-center overflow-hidden relative">
                             <span class="font-bold text-slate-400 text-sm" id="previewPlaceholder">Vista previa de la foto</span>
                             <img id="imgPreview" src="" class="w-full h-full object-cover hidden" alt="Preview">
@@ -506,31 +440,25 @@
                     </div>
                 </div>
 
-                <!-- Description -->
                 <div>
                     <label class="block font-black text-black text-sm uppercase mb-1">Descripción Camperización & Equipamiento *</label>
-                    <textarea id="pubDescription" rows="3" required placeholder="Indica si tiene calefacción estacionaria, placa solar, nevera, ducha, placa de gas, homologación..." 
-                        class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white"></textarea>
+                    <textarea id="pubDescription" rows="3" required placeholder="Indica si tiene calefacción estacionaria, placa solar, nevera, ducha, placa de gas, homologación..." class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white"></textarea>
                 </div>
 
-                <!-- Seller Name & Phone -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block font-black text-black text-sm uppercase mb-1">Nombre / Vendedor *</label>
-                        <input type="text" id="pubSeller" required placeholder="Ej. Alex Vanlife" 
-                            class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
+                        <input type="text" id="pubSeller" required placeholder="Ej. Alex Vanlife" class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
                     </div>
                     <div>
                         <label class="block font-black text-black text-sm uppercase mb-1">WhatsApp / Teléfono *</label>
-                        <input type="text" id="pubPhone" required placeholder="611 222 333" 
-                            class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
+                        <input type="text" id="pubPhone" required placeholder="611 222 333" class="w-full bg-slate-50 border-2 border-black rounded-xl p-3 font-bold text-black focus:bg-white">
                     </div>
                 </div>
 
                 <button type="submit" class="w-full bg-camper-orange hover:bg-orange-600 text-white font-black text-lg py-4 rounded-xl border-3 border-black btn-brutal uppercase tracking-wider">
-                    <i class="fa-solid fa-paper-plane mr-2"></i> Publicar Mi Camper Ahora
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Publicar Mi Camper en Supabase
                 </button>
-
             </form>
         </div>
     </div>
@@ -543,7 +471,17 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Preset high quality Unsplash images for camper models
+        // CONFIGURACIÓN OFICIAL SUPABASE
+        const SUPABASE_URL = 'https://ecidgvwrog9savmdzj1z.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_eCIDgVWRog9savmDZJ1Z-Q_RRYIHMj4';
+        
+        let supabaseClient;
+        try {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch(e) {
+            console.error("Error al conectar con Supabase:", e);
+        }
+
         const PRESET_CAMPER_IMAGES = {
             vw_california: 'https://images.unsplash.com/photo-1527786356703-4b100091cd2c?auto=format&fit=crop&w=700&q=80',
             gran_volumen: 'https://images.unsplash.com/photo-1513311968627-2c1b48b59a35?auto=format&fit=crop&w=700&q=80',
@@ -551,10 +489,11 @@
             caravana: 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=700&q=80'
         };
 
-        // EXCLUSIVELY CAMPER INITIAL MOCK DATA (Community + Web Aggregated)
-        const INITIAL_CAMPER_ADS = [
+        const CATEGORIES = ['Todas', 'Furgoneta Camper', 'Gran Volumen', 'Perfilada', 'Capuchina', 'Caravana', 'Accesorios'];
+
+        const MOCK_ADS = [
             {
-                id: 'ext-camper-1',
+                id: 'ext-1',
                 title: 'Volkswagen California T6 Ocean 2.0 TDI 150cv Automatico DSG',
                 price: 49500,
                 category: 'Furgoneta Camper',
@@ -575,28 +514,7 @@
                 externalUrl: 'https://wallapop.com'
             },
             {
-                id: 'local-camper-1',
-                title: 'Fiat Ducato L2H2 Gran Volumen Camperizada 2.3 Multijet',
-                price: 36900,
-                category: 'Gran Volumen',
-                condition: 'Ocasión',
-                location: 'Madrid',
-                year: 2018,
-                km: 110000,
-                sleepPlaces: 3,
-                travelPlaces: 3,
-                isExternal: false,
-                source: 'Comunidad ETC',
-                sourceColor: 'bg-camper-blue',
-                image: 'https://images.unsplash.com/photo-1513311968627-2c1b48b59a35?auto=format&fit=crop&w=700&q=80',
-                description: 'Camperización profesional homologada como furgón vivienda 2448. Placa solar de 200W, batería de litio 150Ah, ducha interior con agua caliente, baño químico Potti y cama fija trasera.',
-                seller: 'Comunidad_EncuentraTuCamper',
-                phone: '655112233',
-                date: 'Hace 1 hora',
-                externalUrl: null
-            },
-            {
-                id: 'ext-camper-2',
+                id: 'ext-2',
                 title: 'Autocaravana Perfilada Knaus LVE Edition 4 Plazas',
                 price: 62000,
                 category: 'Perfilada',
@@ -615,156 +533,386 @@
                 phone: '633889900',
                 date: 'Hace 3 horas',
                 externalUrl: 'https://autoscout24.es'
-            },
-            {
-                id: 'ext-camper-3',
-                title: 'Mercedes-Benz Sprinter 316 CDI L3H2 Camper Offroad 4x4',
-                price: 78000,
-                category: 'Gran Volumen',
-                condition: 'Ocasión',
-                location: 'San Sebastián',
-                year: 2020,
-                km: 68000,
-                sleepPlaces: 2,
-                travelPlaces: 2,
-                isExternal: true,
-                source: 'Milanuncios',
-                sourceColor: 'bg-amber-600',
-                image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=700&q=80',
-                description: 'Preparación expedición Overland 4x4. Snorkel, neumáticos BF Goodrich All Terrain, suspensión reinforced, depósito de agua limpia 120L y aislamiento térmico Kaiflex 20mm.',
-                seller: 'BasqueOverland',
-                phone: '677443322',
-                date: 'Hace 4 horas',
-                externalUrl: 'https://milanuncios.com'
-            },
-            {
-                id: 'local-camper-2',
-                title: 'Volkswagen T4 California 2.5 TDI 102cv Restaurada',
-                price: 18500,
-                category: 'Furgoneta Camper',
-                condition: 'Restaurada',
-                location: 'Málaga',
-                year: 1999,
-                km: 290000,
-                sleepPlaces: 4,
-                travelPlaces: 4,
-                isExternal: false,
-                source: 'Comunidad ETC',
-                sourceColor: 'bg-camper-blue',
-                image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=700&q=80',
-                description: 'Clásica mítica en perfecto estado. Motor TDI indestructible revisado por completo. Lona de techo elevable recién cambiada, tapicería original y batería auxiliar nueva.',
-                seller: 'Pablo_Andalucia',
-                phone: '699001122',
-                date: 'Hace 6 horas',
-                externalUrl: null
-            },
-            {
-                id: 'ext-camper-4',
-                title: 'Autocaravana Capuchina Dethleffs Globebus 6 Plazas Viajar/Dormir',
-                price: 43500,
-                category: 'Capuchina',
-                condition: 'Ocasión',
-                location: 'Sevilla',
-                year: 2016,
-                km: 98000,
-                sleepPlaces: 6,
-                travelPlaces: 6,
-                isExternal: true,
-                source: 'Campify',
-                sourceColor: 'bg-purple-600',
-                image: 'https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&w=700&q=80',
-                description: 'Ideal para familias numerosas. Litera trasera doble + gran cama en la capuchina. Calefacción Truma Combi 4, portabicis para 4 bicicletas y panel solar.',
-                seller: 'SevillaVan',
-                phone: '622778899',
-                date: 'Hace 8 horas',
-                externalUrl: 'https://campify.es'
-            },
-            {
-                id: 'local-camper-3',
-                title: 'Caravana Rutera Ligerita Adria Aviva 360 DK (Menos 750kg)',
-                price: 13200,
-                category: 'Caravana',
-                condition: 'Ocasión',
-                location: 'Zaragoza',
-                year: 2021,
-                km: 12000,
-                sleepPlaces: 4,
-                travelPlaces: 0,
-                isExternal: false,
-                source: 'Comunidad ETC',
-                sourceColor: 'bg-camper-blue',
-                image: 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=700&q=80',
-                description: 'Caravana muy fácil de llevar sin necesidad de matrícula propia ni seguro adicional. 2 literas traseras + salón convertible en cama de matrimonio. Estabilizador Alko.',
-                seller: 'Ebro_Caravans',
-                phone: '644332211',
-                date: 'Hace 12 horas',
-                externalUrl: null
-            },
-            {
-                id: 'ext-camper-5',
-                title: 'Módulo Kit Camper Ququq para Berlingo / Partner / Caddy',
-                price: 2400,
-                category: 'Accesorios',
-                condition: 'Nuevas',
-                location: 'Bilbao',
-                year: 2023,
-                km: 0,
-                sleepPlaces: 2,
-                travelPlaces: 0,
-                isExternal: true,
-                source: 'Wallapop',
-                sourceColor: 'bg-emerald-600',
-                image: 'https://images.unsplash.com/photo-1517824806704-9040b037703b?auto=format&fit=crop&w=700&q=80',
-                description: 'Módulo desmontable en 1 minuto. Cama plegable de 195x125cm, cocina de gas integrada y 2 depósitos de agua de 10L con grifo. Sin necesidad de homologación.',
-                seller: 'NordicCamperKit',
-                phone: '688112233',
-                date: 'Hace 1 día',
-                externalUrl: 'https://wallapop.com'
             }
         ];
 
-        function loadAdsFromStorage() {
-            const stored = localStorage.getItem('encuentratucamper_ads');
-            if (stored) {
+        let allAds = [];
+        let filteredAds = [];
+        let favorites = [];
+        let currentSourceFilter = 'all';
+        let currentCategory = 'Todas';
+        let showingOnlyFavorites = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCategories();
+            loadFavorites();
+            loadAds();
+        });
+
+        async function loadAds() {
+            showToast("Cargando desde Supabase...", "fa-cloud-arrow-down");
+            let supabaseAds = [];
+
+            if (supabaseClient) {
                 try {
-                    allAds = JSON.parse(stored);
-                } catch (e) {
-                    allAds = [...INITIAL_CAMPER_ADS];
+                    const { data, error } = await supabaseClient
+                        .from('anuncios')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+
+                    if (!error && data) {
+                        supabaseAds = data.map(item => ({
+                            id: item.id,
+                            title: item.title,
+                            price: item.price,
+                            category: item.type || 'Furgoneta Camper',
+                            condition: item.condition || 'Ocasión',
+                            location: item.location || 'España',
+                            year: item.year || 2020,
+                            km: item.km || 50000,
+                            sleepPlaces: item.sleeps || 2,
+                            travelPlaces: item.travel_places || 2,
+                            isExternal: false,
+                            source: 'Comunidad Supabase',
+                            sourceColor: 'bg-camper-blue',
+                            image: item.image || PRESET_CAMPER_IMAGES.vw_california,
+                            description: item.description || '',
+                            seller: item.seller || 'Usuario',
+                            phone: item.whatsapp || '600000000',
+                            date: 'Reciente',
+                            externalUrl: null
+                        }));
+                    }
+                } catch(err) {
+                    console.log("Fallback a modo local:", err);
+                }
+            }
+
+            allAds = [...supabaseAds, ...MOCK_ADS];
+            filterAds();
+            updateSourceCounts();
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categoryContainer');
+            container.innerHTML = CATEGORIES.map(cat => `
+                <button onclick="selectCategory('${cat}')" 
+                    class="px-4 py-2 rounded-xl border-2 border-black font-extrabold text-xs sm:text-sm whitespace-nowrap btn-brutal ${currentCategory === cat ? 'bg-camper-orange text-white' : 'bg-white text-black hover:bg-slate-100'}">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function selectCategory(cat) {
+            currentCategory = cat;
+            renderCategories();
+            filterAds();
+        }
+
+        function filterSource(source) {
+            currentSourceFilter = source;
+            showingOnlyFavorites = false;
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-camper-yellow', 'text-black');
+                btn.classList.add('border-transparent');
+            });
+
+            const activeTab = document.getElementById(`tab-${source}`);
+            if (activeTab) {
+                activeTab.classList.add('bg-camper-yellow', 'text-black', 'border-black');
+            }
+
+            filterAds();
+        }
+
+        function filterAds() {
+            const searchTerm = (document.getElementById('searchInput').value || document.getElementById('searchInputMobile').value || '').toLowerCase();
+            const minSleep = parseInt(document.getElementById('filterSleep').value) || 0;
+            const maxPrice = parseInt(document.getElementById('filterMaxPrice').value) || 999999;
+            const minYear = parseInt(document.getElementById('filterMinYear').value) || 0;
+            const condition = document.getElementById('filterCondition').value;
+            const sort = document.getElementById('sortSelect').value;
+
+            filteredAds = allAds.filter(ad => {
+                if (showingOnlyFavorites) return favorites.includes(ad.id);
+
+                if (currentSourceFilter === 'community' && ad.isExternal) return false;
+                if (currentSourceFilter === 'external' && !ad.isExternal) return false;
+
+                if (currentCategory !== 'Todas' && ad.category !== currentCategory) return false;
+                if (ad.sleepPlaces < minSleep) return false;
+                if (ad.price > maxPrice) return false;
+                if (ad.year < minYear) return false;
+                if (condition !== 'all' && ad.condition !== condition) return false;
+
+                if (searchTerm) {
+                    const fullText = `${ad.title} ${ad.location} ${ad.category} ${ad.seller}`.toLowerCase();
+                    if (!fullText.includes(searchTerm)) return false;
+                }
+
+                return true;
+            });
+
+            if (sort === 'price-low') filteredAds.sort((a, b) => a.price - b.price);
+            if (sort === 'price-high') filteredAds.sort((a, b) => b.price - a.price);
+            if (sort === 'year-new') filteredAds.sort((a, b) => b.year - a.year);
+
+            renderAds();
+        }
+
+        function renderAds() {
+            const grid = document.getElementById('adsGrid');
+            const empty = document.getElementById('emptyState');
+            const count = document.getElementById('resultsCount');
+
+            count.textContent = `${filteredAds.length} Campers`;
+
+            if (filteredAds.length === 0) {
+                grid.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+            grid.innerHTML = filteredAds.map(ad => `
+                <div class="bg-white rounded-2xl border-3 border-black card-brutal overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-48 bg-slate-200 overflow-hidden border-b-3 border-black">
+                            <img src="${ad.image}" alt="${ad.title}" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 ${ad.sourceColor} text-white font-black text-xs px-2.5 py-1 rounded-full border-2 border-black">
+                                ${ad.source}
+                            </span>
+                            <button onclick="toggleFav('${ad.id}', event)" class="absolute top-3 right-3 w-9 h-9 bg-white border-2 border-black rounded-full flex items-center justify-center text-lg hover:scale-110 transition-transform">
+                                <i class="fa-${favorites.includes(ad.id) ? 'solid' : 'regular'} fa-heart text-camper-orange"></i>
+                            </button>
+                            <div class="absolute bottom-3 left-3 bg-black/80 backdrop-blur-sm text-white font-black text-xs px-2 py-0.5 rounded-md border border-white">
+                                📍 ${ad.location}
+                            </div>
+                        </div>
+
+                        <div class="p-4 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="bg-camper-yellow text-black font-black text-xs px-2 py-0.5 rounded border border-black uppercase">${ad.category}</span>
+                                <span class="text-xs font-bold text-slate-500">${ad.year} • ${ad.km.toLocaleString()} km</span>
+                            </div>
+
+                            <h3 class="font-extrabold text-base text-black line-clamp-2 hover:text-camper-orange cursor-pointer" onclick="openDetail('${ad.id}')">
+                                ${ad.title}
+                            </h3>
+
+                            <div class="flex items-center gap-2 text-xs font-bold text-slate-700">
+                                <span>🛌 ${ad.sleepPlaces} plazas</span>
+                                <span>•</span>
+                                <span>🏷️ ${ad.condition}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs font-extrabold text-slate-400 block">PRECIO</span>
+                            <span class="text-2xl font-black text-black">${ad.price.toLocaleString()} €</span>
+                        </div>
+                        <button onclick="openDetail('${ad.id}')" class="bg-camper-orange hover:bg-orange-600 text-white font-black px-4 py-2 rounded-xl border-2 border-black btn-brutal text-sm">
+                            Ver Anuncio
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function handlePublishAd(e) {
+            e.preventDefault();
+            
+            const newAd = {
+                title: document.getElementById('pubTitle').value,
+                price: parseFloat(document.getElementById('pubPrice').value),
+                type: document.getElementById('pubCategory').value,
+                year: parseInt(document.getElementById('pubYear').value),
+                km: parseInt(document.getElementById('pubKm').value),
+                sleeps: parseInt(document.getElementById('pubSleepPlaces').value),
+                condition: document.getElementById('pubCondition').value,
+                location: document.getElementById('pubLocation').value,
+                image: document.getElementById('pubImageUrl').value || PRESET_CAMPER_IMAGES.vw_california,
+                description: document.getElementById('pubDescription').value,
+                seller: document.getElementById('pubSeller').value,
+                whatsapp: document.getElementById('pubPhone').value
+            };
+
+            showToast("Guardando en Supabase...", "fa-cloud-arrow-up");
+
+            if (supabaseClient) {
+                const { data, error } = await supabaseClient.from('anuncios').insert([newAd]);
+                if (error) {
+                    showToast("Error en Supabase: " + error.message, "fa-triangle-exclamation");
+                } else {
+                    showToast("¡Anuncio publicado en la nube!", "fa-circle-check");
+                    closePublishModal();
+                    loadAds();
                 }
             } else {
-                allAds = [...INITIAL_CAMPER_ADS];
-                saveAdsToStorage();
+                showToast("Modo offline: Anuncio guardado localmente", "fa-check");
+                closePublishModal();
             }
         }
 
-        function saveAdsToStorage() {
-            localStorage.setItem('encuentratucamper_ads', JSON.stringify(allAds));
+        function openDetail(id) {
+            const ad = allAds.find(a => a.id === id);
+            if (!ad) return;
+
+            const modal = document.getElementById('detailModal');
+            const content = document.getElementById('modalContent');
+
+            content.innerHTML = `
+                <div class="space-y-6">
+                    <div class="h-64 sm:h-80 bg-slate-100 rounded-2xl overflow-hidden border-3 border-black relative">
+                        <img src="${ad.image}" class="w-full h-full object-cover" alt="${ad.title}">
+                        <span class="absolute top-4 left-4 ${ad.sourceColor} text-white font-black px-3 py-1 rounded-full border-2 border-black text-sm">
+                            ${ad.source}
+                        </span>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <span class="bg-camper-yellow font-black text-xs px-2.5 py-1 rounded-md border border-black uppercase">${ad.category}</span>
+                            <h2 class="text-2xl sm:text-3xl font-black text-black mt-2">${ad.title}</h2>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-3xl font-black text-camper-orange">${ad.price.toLocaleString()} €</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-100 p-4 rounded-2xl border-2 border-black text-center">
+                        <div><span class="block text-xs font-bold text-slate-500">AÑO</span><span class="font-black text-base">${ad.year}</span></div>
+                        <div><span class="block text-xs font-bold text-slate-500">KILÓMETROS</span><span class="font-black text-base">${ad.km.toLocaleString()} km</span></div>
+                        <div><span class="block text-xs font-bold text-slate-500">PLAZAS DORMIR</span><span class="font-black text-base">${ad.sleepPlaces} personas</span></div>
+                        <div><span class="block text-xs font-bold text-slate-500">UBICACIÓN</span><span class="font-black text-base">${ad.location}</span></div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-black text-lg text-black uppercase mb-2">Equipamiento & Descripción</h4>
+                        <p class="font-bold text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-2xl border-2 border-black">${ad.description}</p>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t-2 border-slate-200">
+                        ${ad.isExternal ? `
+                            <a href="${ad.externalUrl}" target="_blank" class="flex-1 bg-camper-orange hover:bg-orange-600 text-white font-black py-3.5 rounded-xl border-2 border-black text-center btn-brutal">
+                                Ver Anuncio en ${ad.source} <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+                            </a>
+                        ` : `
+                            <button onclick="contactSeller('${ad.seller}', '${ad.phone}')" class="flex-1 bg-camper-green hover:bg-emerald-600 text-white font-black py-3.5 rounded-xl border-2 border-black btn-brutal flex items-center justify-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-xl"></i> Contactar Vendedor (${ad.seller})
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
         }
 
-        function loadFavoritesFromStorage() {
-            const stored = localStorage.getItem('encuentratucamper_favs');
-            if (stored) {
-                try {
-                    favorites = JSON.parse(stored);
-                } catch (e) {
-                    favorites = [];
-                }
+        function closeDetailModal() { document.getElementById('detailModal').classList.add('hidden'); }
+        function openPublishModal() { document.getElementById('publishModal').classList.remove('hidden'); }
+        function closePublishModal() { document.getElementById('publishModal').classList.add('hidden'); }
+
+        function toggleFav(id, e) {
+            e.stopPropagation();
+            if (favorites.includes(id)) {
+                favorites = favorites.filter(f => f !== id);
+                showToast("Quitado de favoritos", "fa-heart-crack");
+            } else {
+                favorites.push(id);
+                showToast("Añadido a favoritos", "fa-heart");
             }
-            updateFavCountBadge();
+            saveFavorites();
+            filterAds();
         }
 
-        function saveFavoritesToStorage() {
+        function toggleFavoritesView() {
+            showingOnlyFavorites = !showingOnlyFavorites;
+            document.getElementById('sectionTitle').innerText = showingOnlyFavorites ? "Tus Campers Guardadas" : "Campers y Autocaravanas Encontradas";
+            filterAds();
+        }
+
+        function saveFavorites() {
             localStorage.setItem('encuentratucamper_favs', JSON.stringify(favorites));
-            updateFavCountBadge();
+            document.getElementById('favCount').textContent = favorites.length;
+        }
+
+        function loadFavorites() {
+            const stored = localStorage.getItem('encuentratucamper_favs');
+            if (stored) favorites = JSON.parse(stored);
+            document.getElementById('favCount').textContent = favorites.length;
+        }
+
+        function updateSourceCounts() {
+            document.getElementById('count-all').textContent = allAds.length;
+            document.getElementById('count-community').textContent = allAds.filter(a => !a.isExternal).length;
+            document.getElementById('count-external').textContent = allAds.filter(a => a.isExternal).length;
+        }
+
+        function resetFilters() {
+            currentCategory = 'Todas';
+            currentSourceFilter = 'all';
+            showingOnlyFavorites = false;
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterSleep').value = '0';
+            document.getElementById('filterMaxPrice').value = '999999';
+            document.getElementById('filterMinYear').value = '0';
+            document.getElementById('filterCondition').value = 'all';
+            renderCategories();
+            filterAds();
+        }
+
+        function resetCamperFilters() {
+            document.getElementById('filterSleep').value = '0';
+            document.getElementById('filterMaxPrice').value = '999999';
+            document.getElementById('filterMinYear').value = '0';
+            document.getElementById('filterCondition').value = 'all';
+            filterAds();
+        }
+
+        function syncMobileSearch(val) {
+            document.getElementById('searchInput').value = val;
+            filterAds();
+        }
+
+        function setPresetImage(key) {
+            if (PRESET_CAMPER_IMAGES[key]) {
+                document.getElementById('pubImageUrl').value = PRESET_CAMPER_IMAGES[key];
+                updateImagePreview(PRESET_CAMPER_IMAGES[key]);
+            }
+        }
+
+        function updateImagePreview(url) {
+            const preview = document.getElementById('imgPreview');
+            const placeholder = document.getElementById('previewPlaceholder');
+            if (url) {
+                preview.src = url;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                preview.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+            }
         }
 
         function contactSeller(seller, phone) {
             const cleanPhone = phone.replace(/\s+/g, '');
-            showToast(`Conectando por WhatsApp con ${seller}...`, 'fa-comments');
-            setTimeout(() => {
-                window.open(`https://wa.me/34${cleanPhone}?text=Hola%20${encodeURIComponent(seller)},%20vi%20tu%20anuncio%20en%20EncuentraTuCamper%20y%20me%20interesa.`, '_blank');
-            }, 600);
+            window.open(`https://wa.me/34${cleanPhone}?text=Hola%20${encodeURIComponent(seller)},%20vi%20tu%20anuncio%20en%20EncuentraTuCamper%20y%20me%20interesa.`, '_blank');
         }
+
+        function showToast(msg, icon = 'fa-circle-check') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = msg;
+            document.getElementById('toastIcon').className = `fa-solid ${icon} text-camper-yellow text-xl`;
+            toast.classList.remove('translate-y-32');
+            setTimeout(() => toast.classList.add('translate-y-32'), 3000);
+        }
+    </script>
+</body>
+</html>
     </script>
 </body>
 </html>
