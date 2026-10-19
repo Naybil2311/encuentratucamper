@@ -20,98 +20,100 @@ def clasificar_vehiculo(titulo):
         return "Gran Volumen"
     return "Furgoneta Camper"
 
-def obtener_catalogo_masivo():
+def extraer_imagen_real(item):
+    """ Busca recursivamente la imagen real en las distintas estructuras que devuelve Apify """
+    # 1. Lista de imágenes
+    images = item.get("images") or item.get("photos") or item.get("pictures")
+    if isinstance(images, list) and len(images) > 0:
+        first = images[0]
+        if isinstance(first, dict):
+            return first.get("original_url") or first.get("url") or first.get("src") or first.get("big")
+        elif isinstance(first, str) and first.startswith("http"):
+            return first
+    
+    # 2. String directo
+    img_direct = item.get("image") or item.get("featured_image") or item.get("thumbnail")
+    if isinstance(img_direct, str) and img_direct.startswith("http"):
+        return img_direct
+        
+    return None
+
+def extraer_link_real(item):
+    """ Busca la URL exacta del anuncio individual """
+    link = item.get("web_url") or item.get("url") or item.get("share_url") or item.get("link") or item.get("item_url")
+    if isinstance(link, str) and link.startswith("http"):
+        return link
+    return None
+
+def obtener_catalogo_real():
     anuncios = []
     
-    # Términos clave para ampliar el volumen de anuncios
-    busquedas = [
-        "furgoneta camper",
-        "autocaravana",
-        "camper gran volumen",
-        "volkswagen california",
-        "mercedes marco polo",
-        "fiat ducato camper",
-        "furgoneta camperizada"
-    ]
+    if not APIFY_TOKEN:
+        print("Aviso: No hay APIFY_TOKEN configurado.")
+        return []
+
+    busquedas = ["furgoneta camper", "autocaravana", "volkswagen california", "camper gran volumen"]
     
-    # 1. Scraping masivo mediante Apify (si hay token activo)
-    if APIFY_TOKEN:
-        print("Iniciando escaneo multi-búsqueda en Apify...")
-        for kw in busquedas[:3]:  # Procesar principales búsquedas
-            try:
-                url_apify = f"https://api.apify.com/v2/actors/louisdeconinck~wallapop-scraper/run-sync-get-dataset-items?token={APIFY_TOKEN}"
-                res = requests.post(url_apify, json={"keywords": kw, "maxItems": 15}, timeout=40)
-                if res.status_code in [200, 201]:
-                    items = res.json()
-                    if isinstance(items, list):
-                        for item in items:
-                            titulo = item.get("title") or item.get("name")
-                            if not titulo: continue
-                            precio = item.get("price")
-                            if isinstance(precio, dict): precio = precio.get("amount", 25000)
-                            elif not precio or not str(precio).replace('.','').isdigit(): precio = 25000
-                            else: precio = int(float(precio))
+    print("Iniciando extracción profunda de fotos y enlaces en Apify...")
+    for kw in busquedas:
+        try:
+            url_apify = f"https://api.apify.com/v2/actors/louisdeconinck~wallapop-scraper/run-sync-get-dataset-items?token={APIFY_TOKEN}"
+            res = requests.post(url_apify, json={"keywords": kw, "maxItems": 10}, timeout=60)
+            
+            if res.status_code in [200, 201]:
+                items = res.json()
+                if isinstance(items, list):
+                    for item in items:
+                        titulo = item.get("title") or item.get("name")
+                        if not titulo: continue
 
-                            link_web = item.get("url") or item.get("web_url") or item.get("share_url") or "https://wallapop.com"
-                            
-                            anuncios.append({
-                                "title": str(titulo)[:60],
-                                "price": precio,
-                                "location": "España",
-                                "year": 2020,
-                                "km": 85000,
-                                "sleeps": 4,
-                                "type": clasificar_vehiculo(titulo),
-                                "image": "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80",
-                                "url": link_web,
-                                "seller_type": "Particular",
-                                "source": "Wallapop"
-                            })
-            except Exception as e:
-                print(f"Búsqueda omite error en '{kw}': {e}")
+                        # Precio
+                        precio = item.get("price")
+                        if isinstance(precio, dict): precio = precio.get("amount", 0)
+                        elif not precio or not str(precio).replace('.','').isdigit(): precio = 0
+                        else: precio = int(float(precio))
 
-    # 2. Catálogo complementario masivo de Milanuncios y portales especializados
-    print("Inyectando catálogo amplio de Milanuncios y distribuidores...")
-    milanuncios_feed = [
-        {"title": "Ford Transit Custom Camper Westfalia Nugget", "price": 42500, "loc": "Sevilla", "year": 2019, "km": 62000, "type": "Furgoneta Camper", "url": "https://www.milanuncios.com/autocaravanas-de-segunda-mano/ford-nugget.htm", "source": "Milanuncios"},
-        {"title": "Renault Master L2H2 Camperizada Homologada", "price": 29800, "loc": "Zaragoza", "year": 2017, "km": 115000, "type": "Gran Volumen", "url": "https://www.milanuncios.com/autocaravanas-de-segunda-mano/renault-master-camper.htm", "source": "Milanuncios"},
-        {"title": "Autocaravana Integrada McLouis Yearling 89", "price": 54000, "loc": "Valencia", "year": 2018, "km": 58000, "type": "Autocaravana", "url": "https://www.milanuncios.com/autocaravanas-de-segunda-mano/mclouis.htm", "source": "Milanuncios"},
-        {"title": "Volkswagen Transporter T6 Camper Aislada Kaiflex", "price": 27500, "loc": "Asturias", "year": 2016, "km": 140000, "type": "Furgoneta Camper", "url": "https://www.milanuncios.com/autocaravanas-de-segunda-mano/volkswagen-transporter.htm", "source": "Milanuncios"},
-        {"title": "Citroën Jumper L3H2 Camper Completa con Placa Solar", "price": 36900, "loc": "Alicante", "year": 2020, "km": 78000, "type": "Gran Volumen", "url": "https://www.milanuncios.com/autocaravanas-de-segunda-mano/citroen-jumper.htm", "source": "Milanuncios"},
-        {"title": "Autocaravana Capuchina Rimor Seal 12P 6 Plazas", "price": 43900, "loc": "Murcia", "year": 2019, "km": 82000, "type": "Autocaravana", "url": "https://www.milanuncios.com/autocaravanas-de-segunda-mano/rimor.htm", "source": "Milanuncios"},
-        {"title": "Peugeot Boxer L2H2 Camper Profesional Bunkervan", "price": 41000, "loc": "Granada", "year": 2021, "km": 49000, "type": "Gran Volumen", "url": "https://www.milanuncios.com/autocaravanas-de-segunda-mano/peugeot-boxer-camper.htm", "source": "Milanuncios"},
-        {"title": "Mercedes Sprinter 4x4 Camper Offroad", "price": 68000, "loc": "Barcelona", "year": 2020, "km": 55000, "type": "Gran Volumen", "url": "https://www.milanuncios.com/autocaravanas-de-segunda-mano/mercedes-sprinter.htm", "source": "Milanuncios"}
-    ]
+                        # Foto real y Link real
+                        foto_real = extraer_imagen_real(item)
+                        link_real = extraer_link_real(item)
 
-    for m in milanuncios_feed:
-        anuncios.append({
-            "title": m["title"],
-            "price": m["price"],
-            "location": m["loc"],
-            "year": m["year"],
-            "km": m["km"],
-            "sleeps": 4,
-            "type": m["type"],
-            "image": "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80",
-            "url": m["url"],
-            "seller_type": "Particular",
-            "source": m["source"]
-        })
+                        # Omitir si no se encontró ni la foto real ni el link del anuncio
+                        if not foto_real or not link_real:
+                            continue
+
+                        anuncios.append({
+                            "title": str(titulo)[:60],
+                            "price": precio,
+                            "location": item.get("location", {}).get("city") if isinstance(item.get("location"), dict) else "España",
+                            "year": 2020,
+                            "km": 85000,
+                            "sleeps": 4,
+                            "type": clasificar_vehiculo(titulo),
+                            "image": foto_real,
+                            "url": link_real,
+                            "seller_type": "Particular",
+                            "source": "Wallapop"
+                        })
+                    print(f"✓ Extraídos {len(anuncios)} anuncios reales para la búsqueda: '{kw}'")
+        except Exception as e:
+            print(f"Error extrayendo búsqueda '{kw}': {e}")
 
     return anuncios
 
 # --- EJECUCIÓN PRINCIPAL ---
-print("Iniciando Bot de Extracción Masiva...")
-lista_anuncios = obtener_catalogo_masivo()
+print("Ejecutando actualización del catálogo...")
+lista = obtener_catalogo_real()
 
 guardados = 0
-for a in lista_anuncios:
+for a in lista:
     try:
         r = requests.post(f"{SUPABASE_URL}/rest/v1/anuncios", json=a, headers=headers_supabase)
         if r.status_code in [200, 201]:
             guardados += 1
-            print(f"✓ Guardado: {a['title']} | Origen: {a['source']}")
+            print(f"✓ Guardado con éxito: {a['title']}")
+            print(f"   └ Foto: {a['image'][:50]}...")
+            print(f"   └ Link: {a['url']}")
     except Exception as e:
-        print(f"Error enviando a Supabase: {e}")
+        print(f"Error al enviar a Supabase: {e}")
 
-print(f"Extracción finalizada. Total de anuncios procesados: {guardados}")
+print(f"Proceso finalizado. Se han añadido {guardados} anuncios con imagen y link directo real.")
