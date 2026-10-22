@@ -11,7 +11,6 @@ headers_supabase = {
     "Prefer": "return=minimal"
 }
 
-# Anuncios con imágenes estáticas directas que no cambian jamás
 catalogo_estable = [
     {
         "title": "Volkswagen California T6.1 Ocean DSG 150CV 2021",
@@ -21,7 +20,7 @@ catalogo_estable = [
         "km": 42000,
         "sleeps": 4,
         "type": "Furgoneta Camper",
-        "image": "https://raw.githubusercontent.com/taniarascia/sandbox/master/camper.jpg",
+        "image": "https://i.imgur.com/8N88M4s.jpg",
         "url": "https://es.wallapop.com/search?keywords=volkswagen%20california",
         "seller_type": "Particular",
         "source": "Wallapop"
@@ -34,7 +33,7 @@ catalogo_estable = [
         "km": 88000,
         "sleeps": 3,
         "type": "Gran Volumen",
-        "image": "https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "image": "https://i.imgur.com/uR1yM6D.jpg",
         "url": "https://www.milanuncios.com/autocaravanas-de-segunda-mano/fiat-ducato-camper.htm",
         "seller_type": "Profesional",
         "source": "Milanuncios"
@@ -47,7 +46,7 @@ catalogo_estable = [
         "km": 65000,
         "sleeps": 4,
         "type": "Autocaravana",
-        "image": "https://images.pexels.com/photos/386009/pexels-photo-386009.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "image": "https://i.imgur.com/5uL5Y2w.jpg",
         "url": "https://www.milanuncios.com/autocaravanas-de-segunda-mano/benimar.htm",
         "seller_type": "Particular",
         "source": "Milanuncios"
