@@ -11,13 +11,13 @@ headers_supabase = {
     "Prefer": "return=minimal"
 }
 
-# Fotos reales directas de catálogo asignadas a cada modelo exacto
+# Imágenes distintas y específicas para cada tipo de vehículo
 catalogo_real = [
     {
         "title": "Volkswagen California T6.1 Ocean DSG 150CV 2021",
         "price": 58900, "location": "Barcelona", "year": 2021, "km": 42000, "sleeps": 4,
         "type": "Furgoneta Camper",
-        "image": "https://images.weserv.nl/?url=https://cdn.pixabay.com/photo/2019/08/08/11/33/camper-van-4392708_1280.jpg",
+        "image": "https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=800",
         "url": "https://es.wallapop.com/search?keywords=volkswagen%20california",
         "seller_type": "Particular", "source": "Wallapop"
     },
@@ -25,7 +25,7 @@ catalogo_real = [
         "title": "Fiat Ducato Maxi L3H2 Camperizada Homologada",
         "price": 38500, "location": "Madrid", "year": 2020, "km": 88000, "sleeps": 3,
         "type": "Gran Volumen",
-        "image": "https://images.weserv.nl/?url=https://cdn.pixabay.com/photo/2016/11/21/15/22/camper-1845936_1280.jpg",
+        "image": "https://images.pexels.com/photos/1252399/pexels-photo-1252399.jpeg?auto=compress&cs=tinysrgb&w=800",
         "url": "https://www.milanuncios.com/autocaravanas-de-segunda-mano/fiat-ducato-camper.htm",
         "seller_type": "Profesional", "source": "Milanuncios"
     },
@@ -33,7 +33,7 @@ catalogo_real = [
         "title": "Mercedes-Benz Marco Polo V250d 4Matic",
         "price": 64000, "location": "Bilbao", "year": 2022, "km": 31000, "sleeps": 4,
         "type": "Furgoneta Camper",
-        "image": "https://images.weserv.nl/?url=https://cdn.pixabay.com/photo/2017/08/06/02/05/camper-2587977_1280.jpg",
+        "image": "https://images.pexels.com/photos/221433/pexels-photo-221433.jpeg?auto=compress&cs=tinysrgb&w=800",
         "url": "https://es.wallapop.com/search?keywords=mercedes%20marco%20polo",
         "seller_type": "Particular", "source": "Wallapop"
     },
@@ -41,13 +41,13 @@ catalogo_real = [
         "title": "Autocaravana Benimar Tessoro 481 Perfilada",
         "price": 49500, "location": "Valencia", "year": 2019, "km": 65000, "sleeps": 4,
         "type": "Autocaravana",
-        "image": "https://images.weserv.nl/?url=https://cdn.pixabay.com/photo/2020/02/06/20/01/caravan-4825390_1280.jpg",
+        "image": "https://images.pexels.com/photos/386009/pexels-photo-386009.jpeg?auto=compress&cs=tinysrgb&w=800",
         "url": "https://www.milanuncios.com/autocaravanas-de-segunda-mano/benimar.htm",
         "seller_type": "Particular", "source": "Milanuncios"
     }
 ]
 
-print("Iniciando carga de catálogo con imágenes fijas proxy...")
+print("Cargando catálogo con imágenes diferenciadas...")
 insertados = 0
 for a in catalogo_real:
     try:
@@ -58,4 +58,4 @@ for a in catalogo_real:
     except Exception as e:
         print(f"Error: {e}")
 
-print(f"Completado. Total insertados: {insertados}")
+print(f"Completado. Insertados: {insertados}")
